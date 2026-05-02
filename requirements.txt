@@ -1,0 +1,14 @@
+numpy>=2.3
+pandas>=3.0
+joblib>=1.5
+requests>=2.32
+scikit-learn>=1.8
+lightgbm>=4.6
+xgboost>=3.2
+shap>=0.50
+chromadb>=1.5
+langchain-chroma>=1.1
+langchain-huggingface>=1.2
+langchain-community>=0.4
+langchain-text-splitters>=1.1
+sentence-transformers>=5.2

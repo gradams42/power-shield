@@ -1,0 +1,34 @@
+# Dataset (MSU/ORNL — not for redistribution)
+binaryAllNaturalPlusNormalVsAttacks/
+
+# Generated / large data files
+processed_power_data.pkl
+
+# Experimental / rejected models
+power_model_v3.pkl
+power_model_v4.pkl
+power_model_cascade.pkl
+power_model_multiclass.pkl
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+texput.log
+
+# Editor / OS
+.~lock.*
+.DS_Store
+
+# Claude Code settings
+.claude/

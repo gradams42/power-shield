@@ -1,0 +1,341 @@
+┌─[gradams@parrot]─[~/Documents/Projects/LLM-Project]
+└──╼ $/home/gradams/Documents/.venv/bin/python evaluate_system.py --llm-samples 200
+Loading model and data...
+  Threshold loaded from model: 0.560
+Initializing SHAP explainer (uses unwrapped LightGBM base)...
+Connecting to ChromaDB...
+Loading cross-encoder reranker...
+
+============================================================
+  1. LightGBM Classifier Accuracy (held-out 20% test set)
+============================================================
+
+Model           : LightGBM + isotonic calibration
+Alert threshold : P(Attack) >= 0.5600000000000003
+Test set size   : 15,676  (128 features)
+Overall accuracy: 0.9188  (91.88%)  SE=0.0022  95% CI [0.9144, 0.9230]
+Attack recall   : 0.9455  (94.5%)  SE=0.0022  95% CI [0.9411, 0.9495]
+Natural recall  : 0.8534  (85.3%)  SE=0.0052  95% CI [0.8428, 0.8634]
+False alert rate: 0.1466  (14.7%)  95% CI [0.1366, 0.1572]
+F1 (weighted)   : 0.9186
+MCC             : 0.8020  (1=perfect, 0=chance, −1=inverse)
+Cohen's κ       : 0.8020  (>0.80 = strong agreement)
+AUC-ROC         : 0.9665
+
+              precision    recall  f1-score   support
+
+      Attack       0.94      0.95      0.94     11133
+     Natural       0.86      0.85      0.86      4543
+
+    accuracy                           0.92     15676
+   macro avg       0.90      0.90      0.90     15676
+weighted avg       0.92      0.92      0.92     15676
+
+Confusion matrix (rows=actual, cols=predicted):
+               Pred:Attack  Pred:Natural
+Actual Attack       10526           607
+Actual Natural        666          3877
+
+ROC curve saved -> results/roc_curve.png
+
+-- Threshold sweep --
+  Threshold  Atk Recall  Nat Recall  False Alert%  F1-weighted
+       0.30       97.0%       78.5%         21.5%       0.9144
+       0.35       96.6%       80.2%         19.8%       0.9167
+       0.40       96.1%       81.4%         18.6%       0.9174
+       0.45       95.6%       82.9%         17.1%       0.9184
+       0.50       95.2%       84.0%         16.0%       0.9187
+       0.55       94.7%       85.0%         15.0%       0.9183
+       0.60       94.1%       86.0%         14.0%       0.9174
+       0.65       93.3%       86.9%         13.1%       0.9148
+       0.70       92.5%       88.1%         11.9%       0.9131
+
+============================================================
+  2. RAG Manual Retrieval Accuracy
+============================================================
+
+  Description                                         Relay  Expected         Retrieved                  Hit
+  --------------------------------------------------  -----  ---------------  -------------------------  ---
+  R1 FDIA - voltage fluctuation, flat impedance       R1     R1-FDIA          R1-FDIA, RSCA-01, FAULT-01  Y
+  R2 FDIA - voltage fluctuation, flat impedance       R2     R2-FDIA          R2-FDIA, RSCA-01, FAULT-01  Y
+  R3 FDIA - voltage anomaly, no current change        R3     R3-FDIA          R3-FDIA, EXPECTED-09, R4-PM, DEGR-01  Y
+  R4 FDIA/PM - voltage fluctuation, Relay 4           R4     R4-PM            EXPECTED-09, R4-PM, DEGR-01  Y
+  RTCI - current collapse + snort log spike           None   RTCI-01          EXPECTED-09, R1-FDIA, RTCI-01  Y
+  RSCA - impedance drift + harmonic distortion        R1     RSCA-01          RSCA-01, R1-FDIA, PHASE-01  Y
+  FREQ - frequency deviation all relays               None   FREQ-01          R1-FDIA, FREQ-01, R3-FDIA  Y
+  CURR - current > 150%, phase imbalance              R2     CURR-01          EXPECTED-09, R2-FDIA, CURR-01  Y
+  PHASE - phase angle step-change, magnitudes stable  R3     PHASE-01         PHASE-01, R3-FDIA, EXPECTED-09  Y
+  FAULT - voltage collapse + current surge            R2     FAULT-01         R2-FDIA, EXPECTED-09, R4-PM, DEGR-01  Y
+  DEGR-01 - single sensor slow linear drift           R4     DEGR-01          EXPECTED-09, R4-PM, DEGR-01  Y
+  DEGR-02 - multi-sensor relay-wide drift             R2     DEGR-02          R2-FDIA, EXPECTED-09, R4-PM, DEGR-01  Y
+  EXPECTED-09 - peak-load switching at 08:00/17:00    R1     EXPECTED-09      R1-FDIA, EXPECTED-09, R4-PM, DEGR-01  Y
+
+  Overall retrieval accuracy : 13/13  (100.0%)
+  Relay-filtered accuracy    : 11/11  (100.0%)
+
+============================================================
+  3. LLM Remediation Quality  (model=mistral-nemo:latest, n=200)
+============================================================
+
+  Running 200 samples through full LLM pipeline...
+
+  [1/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, FAULT-01                 expected=R4-PM         MATCH
+  [2/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, PHASE-01        expected=R3-FDIA       MATCH
+  [3/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RSCA-01, PHASE-01, FAULT-01  expected=R1-FDIA       MATCH
+  [4/200] GT=Natural   relay=R2    driver=R2-PM5:I                cited=R2-FDIA, RTCI-01, RSCA-01, PHASE-01, EXPECTED-09  expected=CURR-01       WRONG
+  [5/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, CURR-01                  expected=FREQ-01       WRONG
+  [6/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [7/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01               expected=R3-FDIA       MATCH
+  [8/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [9/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [10/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [11/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, FAULT-01                 expected=R4-PM         MATCH
+  [12/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01               expected=R3-FDIA       MATCH
+  [13/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01               expected=R3-FDIA       MATCH
+  [14/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RSCA-01, PHASE-01      expected=R1-FDIA       MATCH
+  [15/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=RTCI-01       WRONG
+  [16/200] GT=Natural   relay=R2    driver=R2:F                    cited=R2-FDIA, PHASE-01               expected=FREQ-01       WRONG
+  [17/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, RSCA-01, PHASE-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [18/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01      expected=R3-FDIA       MATCH
+  [19/200] GT=Attack    relay=R2    driver=R2-PA2:VH               cited=PHASE-01                        expected=R2-FDIA       WRONG
+  [20/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01               expected=R3-FDIA       MATCH
+  [21/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [22/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA, RSCA-01, PHASE-01, DEGR-01, DEGR-02, EXPECTED-09  expected=DEGR-02       MATCH
+  [23/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [24/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RSCA-01, PHASE-01      expected=R1-FDIA       MATCH
+  [25/200] GT=Attack    relay=R3    driver=R3-PM1:V                cited=R3-FDIA, FREQ-01                expected=R3-FDIA       MATCH
+  [26/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [27/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [28/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [29/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [30/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [31/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01        expected=R1-FDIA       MATCH
+  [32/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R4-PM         MATCH
+  [33/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [34/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, RSCA-01, PHASE-01  expected=R1-FDIA       MATCH
+  [35/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [36/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [37/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [38/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01                expected=R3-FDIA       MATCH
+  [39/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [40/200] GT=Attack    relay=R2    driver=R2-PA5:IH               cited=PHASE-01                        expected=R2-FDIA       WRONG
+  [41/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [42/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [43/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, RTCI-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [44/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [45/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01        expected=R1-FDIA       MATCH
+  [46/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01, DEGR-01, EXPECTED-09  expected=R4-PM         MATCH
+  [47/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [48/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [49/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [50/200] GT=Attack    relay=R3    driver=R3-PA:ZH                cited=EXPECTED-09                     expected=R3-FDIA       WRONG
+  [51/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01                 expected=R4-PM         MATCH
+  [52/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FREQ-01                expected=R3-FDIA       MATCH
+  [53/200] GT=Attack    relay=R1    driver=R1-PA3:VH               cited=RSCA-01                         expected=R1-FDIA       WRONG
+  [54/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01      expected=R3-FDIA       MATCH
+  [55/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [56/200] GT=Attack    relay=R2    driver=R2:F                    cited=R2-FDIA, FREQ-01                expected=FREQ-01       MATCH
+  [57/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, CURR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [58/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [59/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [60/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [61/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [62/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA                         expected=R1-FDIA       MATCH
+  [63/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [64/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [65/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [66/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01                 expected=R4-PM         MATCH
+  [67/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [68/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [69/200] GT=Attack    relay=R3    driver=R3-PM5:I                cited=R3-FDIA, RSCA-01, PHASE-01      expected=R3-FDIA       MATCH
+  [70/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [71/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA, R4-PM                  expected=R2-FDIA       MATCH
+  [72/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, FREQ-01                  expected=FREQ-01       MATCH
+  [73/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [74/200] GT=Attack    relay=R4    driver=R4-PM5:I                cited=R4-PM, PHASE-01, EXPECTED-09    expected=R4-PM         MATCH
+  [75/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [76/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [77/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [78/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FREQ-01                expected=R3-FDIA       MATCH
+  [79/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [80/200] GT=Natural   relay=R3    driver=R3-PM1:V                cited=R3-FDIA, CURR-01, FAULT-01      expected=R3-FDIA       MATCH
+  [81/200] GT=Attack    relay=R3    driver=R3-PA5:IH               cited=PHASE-01                        expected=R3-FDIA       WRONG
+  [82/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM                  expected=R3-FDIA       MATCH
+  [83/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RSCA-01, PHASE-01      expected=R1-FDIA       MATCH
+  [84/200] GT=Natural   relay=R2    driver=R2:F                    cited=R4-PM, FREQ-01                  expected=FREQ-01       MATCH
+  [85/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [86/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [87/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RSCA-01, PHASE-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [88/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [89/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, FAULT-01                 expected=R4-PM         MATCH
+  [90/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, CURR-01         expected=R3-FDIA       MATCH
+  [91/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, RTCI-01                  expected=R4-PM         MATCH
+  [92/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [93/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, CURR-01, FAULT-01  expected=R1-FDIA       MATCH
+  [94/200] GT=Attack    relay=R1    driver=R1-PM5:I                cited=PHASE-01                        expected=RTCI-01       WRONG
+  [95/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [96/200] GT=Natural   relay=R3    driver=R3-PM1:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [97/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01      expected=R3-FDIA       MATCH
+  [98/200] GT=Attack    relay=R2    driver=R2:F                    cited=R2-FDIA, R4-PM, FREQ-01         expected=FREQ-01       MATCH
+  [99/200] GT=Attack    relay=R1    driver=R1-PA3:VH               cited=EXPECTED-09                     expected=RTCI-01       WRONG
+  [100/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [101/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA                         expected=R2-FDIA       MATCH
+  [102/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, PHASE-01               expected=R1-FDIA       MATCH
+  [103/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, FREQ-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [104/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [105/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, CURR-01, FAULT-01  expected=R1-FDIA       MATCH
+  [106/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [107/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [108/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01      expected=R3-FDIA       MATCH
+  [109/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, RTCI-01, FAULT-01, DEGR-01  expected=R3-FDIA       MATCH
+  [110/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [111/200] GT=Natural   relay=R2    driver=R2:F                    cited=R2-FDIA, R4-PM, FREQ-01         expected=FREQ-01       MATCH
+  [112/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, FREQ-01, DEGR-01       expected=R1-FDIA       MATCH
+  [113/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [114/200] GT=Natural   relay=R3    driver=R3-PM1:V                cited=R3-FDIA, CURR-01, FAULT-01      expected=R3-FDIA       MATCH
+  [115/200] GT=Attack    relay=R3    driver=R3-PA5:IH               cited=R3-FDIA                         expected=RTCI-01       WRONG
+  [116/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [117/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, FAULT-01      expected=R1-FDIA       MATCH
+  [118/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, RSCA-01, PHASE-01  expected=R3-FDIA       MATCH
+  [119/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, PHASE-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [120/200] GT=Attack    relay=R3    driver=R3-PA5:IH               cited=R4-PM                           expected=RTCI-01       WRONG
+  [121/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, FREQ-01                  expected=FREQ-01       MATCH
+  [122/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [123/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [124/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, CURR-01, FAULT-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [125/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [126/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, PHASE-01        expected=R3-FDIA       MATCH
+  [127/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [128/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [129/200] GT=Attack    relay=R2    driver=R2:F                    cited=R2-FDIA, R4-PM, PHASE-01        expected=FREQ-01       WRONG
+  [130/200] GT=Attack    relay=R2    driver=R2-PA:ZH                cited=R2-FDIA, R4-PM                  expected=R2-FDIA       MATCH
+  [131/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, FAULT-01        expected=R3-FDIA       MATCH
+  [132/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [133/200] GT=Attack    relay=R2    driver=R2-PM5:I                cited=R2-FDIA, R4-PM, RSCA-01, PHASE-01  expected=CURR-01       WRONG
+  [134/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, FAULT-01, DEGR-01, EXPECTED-09  expected=R4-PM         MATCH
+  [135/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM                  expected=R3-FDIA       MATCH
+  [136/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [137/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [138/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [139/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [140/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [141/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, RTCI-01, PHASE-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [142/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [143/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [144/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA, RTCI-01, CURR-01, FAULT-01  expected=DEGR-02       WRONG
+  [145/200] GT=Attack    relay=R2    driver=R2-PM5:I                cited=R2-FDIA                         expected=CURR-01       WRONG
+  [146/200] GT=Attack    relay=R2    driver=R2-PA:ZH                cited=R2-FDIA                         expected=R2-FDIA       MATCH
+  [147/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA                         expected=R3-FDIA       MATCH
+  [148/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [149/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01      expected=R3-FDIA       MATCH
+  [150/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA, R4-PM, PHASE-01, DEGR-01, DEGR-02  expected=R2-FDIA       MATCH
+  [151/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01        expected=R1-FDIA       MATCH
+  [152/200] GT=Natural   relay=R2    driver=R2:F                    cited=R2-FDIA, FREQ-01                expected=FREQ-01       MATCH
+  [153/200] GT=Attack    relay=R4    driver=R4:F                    cited=R4-PM                           expected=RTCI-01       WRONG
+  [154/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [155/200] GT=Attack    relay=R2    driver=R2-PA:ZH                cited=R2-FDIA                         expected=R2-FDIA       MATCH
+  [156/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [157/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01                 expected=R4-PM         MATCH
+  [158/200] GT=Natural   relay=R2    driver=R2:F                    cited=R2-FDIA, R4-PM, CURR-01         expected=RTCI-01       WRONG
+  [159/200] GT=Attack    relay=R3    driver=R3-PM1:V                cited=R3-FDIA, FAULT-01               expected=R3-FDIA       MATCH
+  [160/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [161/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [162/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [163/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [164/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01                expected=R1-FDIA       MATCH
+  [165/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [166/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [167/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [168/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [169/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [170/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, R4-PM, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [171/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, FREQ-01                  expected=FREQ-01       MATCH
+  [172/200] GT=Attack    relay=R2    driver=R2-PM1:V                cited=R2-FDIA                         expected=R2-FDIA       MATCH
+  [173/200] GT=Attack    relay=R2    driver=R2-PA:ZH                cited=R2-FDIA, R4-PM                  expected=R2-FDIA       MATCH
+  [174/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [175/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FREQ-01                expected=R3-FDIA       MATCH
+  [176/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, RSCA-01                  expected=R4-PM         MATCH
+  [177/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [178/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01        expected=R1-FDIA       MATCH
+  [179/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, RTCI-01, CURR-01         expected=R4-PM         MATCH
+  [180/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01                 expected=R4-PM         MATCH
+  [181/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RTCI-01, CURR-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [182/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [183/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, PHASE-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [184/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, CURR-01, EXPECTED-09   expected=R3-FDIA       MATCH
+  [185/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, R4-PM, FAULT-01        expected=R1-FDIA       MATCH
+  [186/200] GT=Natural   relay=R2    driver=R2:F                    cited=R4-PM, FREQ-01                  expected=FREQ-01       MATCH
+  [187/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, FAULT-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [188/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, FAULT-01               expected=R1-FDIA       MATCH
+  [189/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, DEGR-01                  expected=R4-PM         MATCH
+  [190/200] GT=Attack    relay=R1    driver=R1-PM2:V                cited=R1-FDIA, PHASE-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [191/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM                           expected=R4-PM         MATCH
+  [192/200] GT=Natural   relay=R3    driver=R3-PM1:V                cited=R3-FDIA, CURR-01, FAULT-01      expected=R3-FDIA       MATCH
+  [193/200] GT=Attack    relay=R4    driver=R4-PM2:V                cited=R4-PM, PHASE-01                 expected=R4-PM         MATCH
+  [194/200] GT=Natural   relay=R1    driver=R1-PM2:V                cited=R1-FDIA, RTCI-01, FAULT-01, DEGR-01, EXPECTED-09  expected=R1-FDIA       MATCH
+  [195/200] GT=Attack    relay=R2    driver=R2-PM5:I                cited=R2-FDIA, CURR-01, FAULT-01      expected=CURR-01       MATCH
+  [196/200] GT=Natural   relay=R4    driver=R4-PM2:V                cited=R4-PM, FAULT-01                 expected=R4-PM         MATCH
+  [197/200] GT=Attack    relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01               expected=R3-FDIA       MATCH
+  [198/200] GT=Attack    relay=R2    driver=R2-PA6:IH               cited=R2-FDIA, FAULT-01               expected=R2-FDIA       MATCH
+  [199/200] GT=Natural   relay=R3    driver=R3-PM2:V                cited=R3-FDIA, PHASE-01, DEGR-01, EXPECTED-09  expected=R3-FDIA       MATCH
+  [200/200] GT=Natural   relay=R3    driver=R3-PM1:V                cited=R3-FDIA, RSCA-01, PHASE-01, EXPECTED-09  expected=R3-FDIA       MATCH
+
+  Protocol citation rate (any)  : 200/200  (100.0%)  SE=0.0000  95% CI [0.981, 1.000]
+  Correct protocol rate         : 181/200  (90.5%)  SE=0.0207  95% CI [0.856, 0.938]
+
+  χ² vs. random baseline (p₀=1/13=0.0769):
+    χ²=1931.4204   p=0.00e+00   df=1
+    Reject H₀ — performance is non-random (p<0.05)
+
+  Protocol Attribution Confusion Matrix  (rows=expected, cols=cited by LLM)
+  Expected        CURR-01      DEGR-02      EXPECTED-09  FREQ-01      PHASE-01     R1-FDIA      R2-FDIA      R3-FDIA      R4-PM        RSCA-01      RTCI-01      
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+  CURR-01         0            0            0            0            0            0            4            0            0            0            0            
+  DEGR-02         0            0            0            0            0            0            2            0            0            0            0            
+  FREQ-01         0            0            0            0            0            0            6            0            6            0            0            
+  R1-FDIA         0            0            0            0            0            32           0            0            0            1            0            
+  R2-FDIA         0            0            0            0            2            0            9            0            0            0            0            
+  R3-FDIA         0            0            1            0            1            0            0            96           0            0            0            
+  R4-PM           0            0            0            0            0            0            0            0            33           0            0            
+  RTCI-01         0            0            1            0            1            0            1            1            3            0            0            
+
+  Samples with wrong or missing protocol:
+    idx=67969  GT=Natural  relay=R2  driver=R2-PM5:I  expected=CURR-01  cited=['R2-FDIA', 'RTCI-01', 'RSCA-01', 'PHASE-01', 'EXPECTED-09']
+    idx=30920  GT=Natural  relay=R4  driver=R4-PM2:V  expected=FREQ-01  cited=['R4-PM', 'CURR-01']
+    idx=29424  GT=Natural  relay=R4  driver=R4-PM2:V  expected=RTCI-01  cited=['R4-PM']
+    idx=77863  GT=Natural  relay=R2  driver=R2:F  expected=FREQ-01  cited=['R2-FDIA', 'PHASE-01']
+    idx=33574  GT=Attack  relay=R2  driver=R2-PA2:VH  expected=R2-FDIA  cited=['PHASE-01']
+    idx=17795  GT=Attack  relay=R2  driver=R2-PA5:IH  expected=R2-FDIA  cited=['PHASE-01']
+    idx=12053  GT=Attack  relay=R3  driver=R3-PA:ZH  expected=R3-FDIA  cited=['EXPECTED-09']
+    idx=48533  GT=Attack  relay=R1  driver=R1-PA3:VH  expected=R1-FDIA  cited=['RSCA-01']
+    idx=49174  GT=Attack  relay=R3  driver=R3-PA5:IH  expected=R3-FDIA  cited=['PHASE-01']
+    idx=64732  GT=Attack  relay=R1  driver=R1-PM5:I  expected=RTCI-01  cited=['PHASE-01']
+    idx=44116  GT=Attack  relay=R1  driver=R1-PA3:VH  expected=RTCI-01  cited=['EXPECTED-09']
+    idx=27742  GT=Attack  relay=R3  driver=R3-PA5:IH  expected=RTCI-01  cited=['R3-FDIA']
+    idx=7481  GT=Attack  relay=R3  driver=R3-PA5:IH  expected=RTCI-01  cited=['R4-PM']
+    idx=33170  GT=Attack  relay=R2  driver=R2:F  expected=FREQ-01  cited=['R2-FDIA', 'R4-PM', 'PHASE-01']
+    idx=43662  GT=Attack  relay=R2  driver=R2-PM5:I  expected=CURR-01  cited=['R2-FDIA', 'R4-PM', 'RSCA-01', 'PHASE-01']
+    idx=7808  GT=Attack  relay=R2  driver=R2-PM1:V  expected=DEGR-02  cited=['R2-FDIA', 'RTCI-01', 'CURR-01', 'FAULT-01']
+    idx=76504  GT=Attack  relay=R2  driver=R2-PM5:I  expected=CURR-01  cited=['R2-FDIA']
+    idx=74840  GT=Attack  relay=R4  driver=R4:F  expected=RTCI-01  cited=['R4-PM']
+    idx=19870  GT=Natural  relay=R2  driver=R2:F  expected=RTCI-01  cited=['R2-FDIA', 'R4-PM', 'CURR-01']
+
+============================================================
+  Benchmark Complete
+============================================================
+
+  Classifier accuracy : 91.9%  95% CI [91.4%, 92.3%]
+  Attack recall       : 94.5%  95% CI [94.1%, 95.0%]
+  False alert rate    : 14.7%  95% CI [13.7%, 15.7%]
+  MCC                 : 0.8020
+  Cohen's κ           : 0.8020
+  AUC-ROC             : 0.9665
+  RAG accuracy        : 13/13  (100.0%)
+  LLM any-citation    : 200/200  (100.0%)  95% CI [98.1%, 100.0%]
+  LLM correct-protocol: 181/200  (90.5%)  95% CI [85.6%, 93.8%]
+  χ² vs. random       : 1931.42  p=0.00e+00  (reject H₀)
+
+  Full results saved -> results/benchmark_results.json
+
+┌─[gradams@parrot]─[~/Documents/Projects/LLM-Project]
+└──╼ $

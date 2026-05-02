@@ -1,0 +1,1122 @@
+{
+  "version": "v3",
+  "description": "Full 128-feature ensemble, no SHAP pruning",
+  "dataset": {
+    "total_samples": 78377,
+    "n_attack": 55663,
+    "n_natural": 22714,
+    "class_ratio": 2.4506,
+    "n_features_used": 128
+  },
+  "split": {
+    "train": 50160,
+    "calibration": 12541,
+    "test": 15676
+  },
+  "optimal_threshold": 0.6000000000000003,
+  "test_metrics": {
+    "accuracy": 0.9189,
+    "attack_recall": 0.9465,
+    "natural_recall": 0.8514,
+    "false_alert_rate": 0.1486,
+    "f1_weighted": 0.9187,
+    "mcc": 0.8021,
+    "auc_roc": 0.9663
+  },
+  "vs_v2": {
+    "accuracy_delta_pp": 0.01,
+    "auc_roc_delta": -0.0002,
+    "mcc_delta": 0.0001
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.3,
+      "attack_recall": 0.9731,
+      "natural_recall": 0.7911,
+      "false_alert_rate": 0.2089,
+      "accuracy": 0.9203,
+      "f1_weighted": 0.9184,
+      "feasible": false
+    },
+    {
+      "threshold": 0.305,
+      "attack_recall": 0.9726,
+      "natural_recall": 0.7915,
+      "false_alert_rate": 0.2085,
+      "accuracy": 0.9201,
+      "f1_weighted": 0.9182,
+      "feasible": false
+    },
+    {
+      "threshold": 0.31,
+      "attack_recall": 0.9722,
+      "natural_recall": 0.7929,
+      "false_alert_rate": 0.2071,
+      "accuracy": 0.9202,
+      "f1_weighted": 0.9183,
+      "feasible": false
+    },
+    {
+      "threshold": 0.315,
+      "attack_recall": 0.9716,
+      "natural_recall": 0.7935,
+      "false_alert_rate": 0.2065,
+      "accuracy": 0.92,
+      "f1_weighted": 0.9182,
+      "feasible": false
+    },
+    {
+      "threshold": 0.32,
+      "attack_recall": 0.9714,
+      "natural_recall": 0.7951,
+      "false_alert_rate": 0.2049,
+      "accuracy": 0.9203,
+      "f1_weighted": 0.9185,
+      "feasible": false
+    },
+    {
+      "threshold": 0.325,
+      "attack_recall": 0.9712,
+      "natural_recall": 0.7964,
+      "false_alert_rate": 0.2036,
+      "accuracy": 0.9205,
+      "f1_weighted": 0.9187,
+      "feasible": false
+    },
+    {
+      "threshold": 0.33,
+      "attack_recall": 0.9712,
+      "natural_recall": 0.7971,
+      "false_alert_rate": 0.2029,
+      "accuracy": 0.9207,
+      "f1_weighted": 0.9189,
+      "feasible": false
+    },
+    {
+      "threshold": 0.335,
+      "attack_recall": 0.9711,
+      "natural_recall": 0.7971,
+      "false_alert_rate": 0.2029,
+      "accuracy": 0.9206,
+      "f1_weighted": 0.9189,
+      "feasible": false
+    },
+    {
+      "threshold": 0.34,
+      "attack_recall": 0.9706,
+      "natural_recall": 0.7982,
+      "false_alert_rate": 0.2018,
+      "accuracy": 0.9206,
+      "f1_weighted": 0.9189,
+      "feasible": false
+    },
+    {
+      "threshold": 0.345,
+      "attack_recall": 0.9704,
+      "natural_recall": 0.7997,
+      "false_alert_rate": 0.2003,
+      "accuracy": 0.9209,
+      "f1_weighted": 0.9192,
+      "feasible": false
+    },
+    {
+      "threshold": 0.35,
+      "attack_recall": 0.97,
+      "natural_recall": 0.8006,
+      "false_alert_rate": 0.1994,
+      "accuracy": 0.9209,
+      "f1_weighted": 0.9192,
+      "feasible": false
+    },
+    {
+      "threshold": 0.355,
+      "attack_recall": 0.9697,
+      "natural_recall": 0.8021,
+      "false_alert_rate": 0.1979,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9195,
+      "feasible": false
+    },
+    {
+      "threshold": 0.36,
+      "attack_recall": 0.9694,
+      "natural_recall": 0.8032,
+      "false_alert_rate": 0.1968,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9196,
+      "feasible": false
+    },
+    {
+      "threshold": 0.365,
+      "attack_recall": 0.9688,
+      "natural_recall": 0.805,
+      "false_alert_rate": 0.195,
+      "accuracy": 0.9213,
+      "f1_weighted": 0.9198,
+      "feasible": false
+    },
+    {
+      "threshold": 0.37,
+      "attack_recall": 0.9682,
+      "natural_recall": 0.8061,
+      "false_alert_rate": 0.1939,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9197,
+      "feasible": false
+    },
+    {
+      "threshold": 0.375,
+      "attack_recall": 0.9678,
+      "natural_recall": 0.807,
+      "false_alert_rate": 0.193,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9197,
+      "feasible": false
+    },
+    {
+      "threshold": 0.38,
+      "attack_recall": 0.9674,
+      "natural_recall": 0.8081,
+      "false_alert_rate": 0.1919,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9198,
+      "feasible": false
+    },
+    {
+      "threshold": 0.385,
+      "attack_recall": 0.9669,
+      "natural_recall": 0.8089,
+      "false_alert_rate": 0.1911,
+      "accuracy": 0.9211,
+      "f1_weighted": 0.9197,
+      "feasible": false
+    },
+    {
+      "threshold": 0.39,
+      "attack_recall": 0.9666,
+      "natural_recall": 0.8109,
+      "false_alert_rate": 0.1891,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9201,
+      "feasible": false
+    },
+    {
+      "threshold": 0.395,
+      "attack_recall": 0.9662,
+      "natural_recall": 0.8116,
+      "false_alert_rate": 0.1884,
+      "accuracy": 0.9214,
+      "f1_weighted": 0.92,
+      "feasible": false
+    },
+    {
+      "threshold": 0.4,
+      "attack_recall": 0.9659,
+      "natural_recall": 0.8127,
+      "false_alert_rate": 0.1873,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9201,
+      "feasible": false
+    },
+    {
+      "threshold": 0.405,
+      "attack_recall": 0.9654,
+      "natural_recall": 0.8136,
+      "false_alert_rate": 0.1864,
+      "accuracy": 0.9214,
+      "f1_weighted": 0.9201,
+      "feasible": false
+    },
+    {
+      "threshold": 0.41,
+      "attack_recall": 0.965,
+      "natural_recall": 0.8144,
+      "false_alert_rate": 0.1856,
+      "accuracy": 0.9213,
+      "f1_weighted": 0.9201,
+      "feasible": false
+    },
+    {
+      "threshold": 0.415,
+      "attack_recall": 0.9646,
+      "natural_recall": 0.8158,
+      "false_alert_rate": 0.1842,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9202,
+      "feasible": false
+    },
+    {
+      "threshold": 0.42,
+      "attack_recall": 0.9641,
+      "natural_recall": 0.8173,
+      "false_alert_rate": 0.1827,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9203,
+      "feasible": false
+    },
+    {
+      "threshold": 0.425,
+      "attack_recall": 0.9637,
+      "natural_recall": 0.8191,
+      "false_alert_rate": 0.1809,
+      "accuracy": 0.9218,
+      "f1_weighted": 0.9206,
+      "feasible": false
+    },
+    {
+      "threshold": 0.43,
+      "attack_recall": 0.9634,
+      "natural_recall": 0.8197,
+      "false_alert_rate": 0.1803,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.9206,
+      "feasible": false
+    },
+    {
+      "threshold": 0.435,
+      "attack_recall": 0.9629,
+      "natural_recall": 0.8208,
+      "false_alert_rate": 0.1792,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.9206,
+      "feasible": false
+    },
+    {
+      "threshold": 0.44,
+      "attack_recall": 0.9628,
+      "natural_recall": 0.8217,
+      "false_alert_rate": 0.1783,
+      "accuracy": 0.9219,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.445,
+      "attack_recall": 0.9625,
+      "natural_recall": 0.8228,
+      "false_alert_rate": 0.1772,
+      "accuracy": 0.922,
+      "f1_weighted": 0.921,
+      "feasible": false
+    },
+    {
+      "threshold": 0.45,
+      "attack_recall": 0.9623,
+      "natural_recall": 0.8246,
+      "false_alert_rate": 0.1754,
+      "accuracy": 0.9224,
+      "f1_weighted": 0.9213,
+      "feasible": false
+    },
+    {
+      "threshold": 0.455,
+      "attack_recall": 0.962,
+      "natural_recall": 0.8254,
+      "false_alert_rate": 0.1746,
+      "accuracy": 0.9224,
+      "f1_weighted": 0.9214,
+      "feasible": false
+    },
+    {
+      "threshold": 0.46,
+      "attack_recall": 0.9615,
+      "natural_recall": 0.8268,
+      "false_alert_rate": 0.1732,
+      "accuracy": 0.9224,
+      "f1_weighted": 0.9215,
+      "feasible": false
+    },
+    {
+      "threshold": 0.465,
+      "attack_recall": 0.9607,
+      "natural_recall": 0.8276,
+      "false_alert_rate": 0.1724,
+      "accuracy": 0.9221,
+      "f1_weighted": 0.9212,
+      "feasible": false
+    },
+    {
+      "threshold": 0.47,
+      "attack_recall": 0.9602,
+      "natural_recall": 0.8287,
+      "false_alert_rate": 0.1713,
+      "accuracy": 0.9221,
+      "f1_weighted": 0.9212,
+      "feasible": false
+    },
+    {
+      "threshold": 0.475,
+      "attack_recall": 0.9595,
+      "natural_recall": 0.8292,
+      "false_alert_rate": 0.1708,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.48,
+      "attack_recall": 0.959,
+      "natural_recall": 0.8298,
+      "false_alert_rate": 0.1702,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9207,
+      "feasible": false
+    },
+    {
+      "threshold": 0.485,
+      "attack_recall": 0.9586,
+      "natural_recall": 0.8309,
+      "false_alert_rate": 0.1691,
+      "accuracy": 0.9216,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.49,
+      "attack_recall": 0.9581,
+      "natural_recall": 0.8327,
+      "false_alert_rate": 0.1673,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.9209,
+      "feasible": false
+    },
+    {
+      "threshold": 0.495,
+      "attack_recall": 0.9577,
+      "natural_recall": 0.8331,
+      "false_alert_rate": 0.1669,
+      "accuracy": 0.9216,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.5,
+      "attack_recall": 0.9572,
+      "natural_recall": 0.8343,
+      "false_alert_rate": 0.1657,
+      "accuracy": 0.9216,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.505,
+      "attack_recall": 0.9569,
+      "natural_recall": 0.8349,
+      "false_alert_rate": 0.1651,
+      "accuracy": 0.9215,
+      "f1_weighted": 0.9208,
+      "feasible": false
+    },
+    {
+      "threshold": 0.51,
+      "attack_recall": 0.9566,
+      "natural_recall": 0.836,
+      "false_alert_rate": 0.164,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.921,
+      "feasible": false
+    },
+    {
+      "threshold": 0.515,
+      "attack_recall": 0.9558,
+      "natural_recall": 0.838,
+      "false_alert_rate": 0.162,
+      "accuracy": 0.9217,
+      "f1_weighted": 0.921,
+      "feasible": false
+    },
+    {
+      "threshold": 0.52,
+      "attack_recall": 0.9552,
+      "natural_recall": 0.8384,
+      "false_alert_rate": 0.1616,
+      "accuracy": 0.9213,
+      "f1_weighted": 0.9207,
+      "feasible": false
+    },
+    {
+      "threshold": 0.525,
+      "attack_recall": 0.9544,
+      "natural_recall": 0.8395,
+      "false_alert_rate": 0.1605,
+      "accuracy": 0.9211,
+      "f1_weighted": 0.9205,
+      "feasible": false
+    },
+    {
+      "threshold": 0.53,
+      "attack_recall": 0.9541,
+      "natural_recall": 0.8404,
+      "false_alert_rate": 0.1596,
+      "accuracy": 0.9212,
+      "f1_weighted": 0.9206,
+      "feasible": false
+    },
+    {
+      "threshold": 0.535,
+      "attack_recall": 0.9535,
+      "natural_recall": 0.8413,
+      "false_alert_rate": 0.1587,
+      "accuracy": 0.921,
+      "f1_weighted": 0.9204,
+      "feasible": false
+    },
+    {
+      "threshold": 0.54,
+      "attack_recall": 0.9528,
+      "natural_recall": 0.8422,
+      "false_alert_rate": 0.1578,
+      "accuracy": 0.9208,
+      "f1_weighted": 0.9203,
+      "feasible": false
+    },
+    {
+      "threshold": 0.545,
+      "attack_recall": 0.952,
+      "natural_recall": 0.8428,
+      "false_alert_rate": 0.1572,
+      "accuracy": 0.9204,
+      "f1_weighted": 0.9199,
+      "feasible": false
+    },
+    {
+      "threshold": 0.55,
+      "attack_recall": 0.9517,
+      "natural_recall": 0.8435,
+      "false_alert_rate": 0.1565,
+      "accuracy": 0.9203,
+      "f1_weighted": 0.9199,
+      "feasible": false
+    },
+    {
+      "threshold": 0.555,
+      "attack_recall": 0.951,
+      "natural_recall": 0.8446,
+      "false_alert_rate": 0.1554,
+      "accuracy": 0.9202,
+      "f1_weighted": 0.9198,
+      "feasible": false
+    },
+    {
+      "threshold": 0.56,
+      "attack_recall": 0.9506,
+      "natural_recall": 0.8455,
+      "false_alert_rate": 0.1545,
+      "accuracy": 0.9201,
+      "f1_weighted": 0.9197,
+      "feasible": false
+    },
+    {
+      "threshold": 0.565,
+      "attack_recall": 0.9501,
+      "natural_recall": 0.8461,
+      "false_alert_rate": 0.1539,
+      "accuracy": 0.9199,
+      "f1_weighted": 0.9196,
+      "feasible": false
+    },
+    {
+      "threshold": 0.57,
+      "attack_recall": 0.9492,
+      "natural_recall": 0.8475,
+      "false_alert_rate": 0.1525,
+      "accuracy": 0.9197,
+      "f1_weighted": 0.9193,
+      "feasible": false
+    },
+    {
+      "threshold": 0.575,
+      "attack_recall": 0.9487,
+      "natural_recall": 0.8481,
+      "false_alert_rate": 0.1519,
+      "accuracy": 0.9196,
+      "f1_weighted": 0.9192,
+      "feasible": false
+    },
+    {
+      "threshold": 0.58,
+      "attack_recall": 0.9481,
+      "natural_recall": 0.8492,
+      "false_alert_rate": 0.1508,
+      "accuracy": 0.9194,
+      "f1_weighted": 0.9191,
+      "feasible": false
+    },
+    {
+      "threshold": 0.585,
+      "attack_recall": 0.9478,
+      "natural_recall": 0.8497,
+      "false_alert_rate": 0.1503,
+      "accuracy": 0.9194,
+      "f1_weighted": 0.9191,
+      "feasible": false
+    },
+    {
+      "threshold": 0.59,
+      "attack_recall": 0.9477,
+      "natural_recall": 0.8503,
+      "false_alert_rate": 0.1497,
+      "accuracy": 0.9195,
+      "f1_weighted": 0.9192,
+      "feasible": false
+    },
+    {
+      "threshold": 0.595,
+      "attack_recall": 0.947,
+      "natural_recall": 0.851,
+      "false_alert_rate": 0.149,
+      "accuracy": 0.9192,
+      "f1_weighted": 0.9189,
+      "feasible": false
+    },
+    {
+      "threshold": 0.6,
+      "attack_recall": 0.9465,
+      "natural_recall": 0.8514,
+      "false_alert_rate": 0.1486,
+      "accuracy": 0.9189,
+      "f1_weighted": 0.9187,
+      "feasible": true
+    },
+    {
+      "threshold": 0.605,
+      "attack_recall": 0.9459,
+      "natural_recall": 0.8521,
+      "false_alert_rate": 0.1479,
+      "accuracy": 0.9187,
+      "f1_weighted": 0.9185,
+      "feasible": true
+    },
+    {
+      "threshold": 0.61,
+      "attack_recall": 0.945,
+      "natural_recall": 0.8534,
+      "false_alert_rate": 0.1466,
+      "accuracy": 0.9185,
+      "f1_weighted": 0.9183,
+      "feasible": true
+    },
+    {
+      "threshold": 0.615,
+      "attack_recall": 0.9445,
+      "natural_recall": 0.8545,
+      "false_alert_rate": 0.1455,
+      "accuracy": 0.9184,
+      "f1_weighted": 0.9183,
+      "feasible": true
+    },
+    {
+      "threshold": 0.62,
+      "attack_recall": 0.9439,
+      "natural_recall": 0.8558,
+      "false_alert_rate": 0.1442,
+      "accuracy": 0.9183,
+      "f1_weighted": 0.9183,
+      "feasible": true
+    },
+    {
+      "threshold": 0.625,
+      "attack_recall": 0.9428,
+      "natural_recall": 0.8569,
+      "false_alert_rate": 0.1431,
+      "accuracy": 0.9179,
+      "f1_weighted": 0.9179,
+      "feasible": true
+    },
+    {
+      "threshold": 0.63,
+      "attack_recall": 0.9421,
+      "natural_recall": 0.8574,
+      "false_alert_rate": 0.1426,
+      "accuracy": 0.9175,
+      "f1_weighted": 0.9175,
+      "feasible": true
+    },
+    {
+      "threshold": 0.635,
+      "attack_recall": 0.9413,
+      "natural_recall": 0.8578,
+      "false_alert_rate": 0.1422,
+      "accuracy": 0.9171,
+      "f1_weighted": 0.9172,
+      "feasible": true
+    },
+    {
+      "threshold": 0.64,
+      "attack_recall": 0.9407,
+      "natural_recall": 0.8589,
+      "false_alert_rate": 0.1411,
+      "accuracy": 0.917,
+      "f1_weighted": 0.9171,
+      "feasible": true
+    },
+    {
+      "threshold": 0.645,
+      "attack_recall": 0.9404,
+      "natural_recall": 0.8607,
+      "false_alert_rate": 0.1393,
+      "accuracy": 0.9173,
+      "f1_weighted": 0.9173,
+      "feasible": true
+    },
+    {
+      "threshold": 0.65,
+      "attack_recall": 0.9396,
+      "natural_recall": 0.8624,
+      "false_alert_rate": 0.1376,
+      "accuracy": 0.9173,
+      "f1_weighted": 0.9174,
+      "feasible": true
+    },
+    {
+      "threshold": 0.655,
+      "attack_recall": 0.9389,
+      "natural_recall": 0.8633,
+      "false_alert_rate": 0.1367,
+      "accuracy": 0.917,
+      "f1_weighted": 0.9172,
+      "feasible": true
+    },
+    {
+      "threshold": 0.66,
+      "attack_recall": 0.9384,
+      "natural_recall": 0.864,
+      "false_alert_rate": 0.136,
+      "accuracy": 0.9168,
+      "f1_weighted": 0.917,
+      "feasible": true
+    },
+    {
+      "threshold": 0.665,
+      "attack_recall": 0.9374,
+      "natural_recall": 0.8651,
+      "false_alert_rate": 0.1349,
+      "accuracy": 0.9164,
+      "f1_weighted": 0.9167,
+      "feasible": true
+    },
+    {
+      "threshold": 0.67,
+      "attack_recall": 0.9371,
+      "natural_recall": 0.8659,
+      "false_alert_rate": 0.1341,
+      "accuracy": 0.9165,
+      "f1_weighted": 0.9167,
+      "feasible": true
+    },
+    {
+      "threshold": 0.675,
+      "attack_recall": 0.9365,
+      "natural_recall": 0.8666,
+      "false_alert_rate": 0.1334,
+      "accuracy": 0.9162,
+      "f1_weighted": 0.9165,
+      "feasible": true
+    },
+    {
+      "threshold": 0.68,
+      "attack_recall": 0.9362,
+      "natural_recall": 0.8684,
+      "false_alert_rate": 0.1316,
+      "accuracy": 0.9166,
+      "f1_weighted": 0.9169,
+      "feasible": true
+    },
+    {
+      "threshold": 0.685,
+      "attack_recall": 0.9357,
+      "natural_recall": 0.869,
+      "false_alert_rate": 0.131,
+      "accuracy": 0.9164,
+      "f1_weighted": 0.9167,
+      "feasible": true
+    },
+    {
+      "threshold": 0.69,
+      "attack_recall": 0.9351,
+      "natural_recall": 0.8708,
+      "false_alert_rate": 0.1292,
+      "accuracy": 0.9164,
+      "f1_weighted": 0.9168,
+      "feasible": true
+    },
+    {
+      "threshold": 0.695,
+      "attack_recall": 0.9342,
+      "natural_recall": 0.8708,
+      "false_alert_rate": 0.1292,
+      "accuracy": 0.9158,
+      "f1_weighted": 0.9162,
+      "feasible": true
+    },
+    {
+      "threshold": 0.7,
+      "attack_recall": 0.9334,
+      "natural_recall": 0.8721,
+      "false_alert_rate": 0.1279,
+      "accuracy": 0.9157,
+      "f1_weighted": 0.9161,
+      "feasible": true
+    },
+    {
+      "threshold": 0.705,
+      "attack_recall": 0.9329,
+      "natural_recall": 0.8734,
+      "false_alert_rate": 0.1266,
+      "accuracy": 0.9157,
+      "f1_weighted": 0.9161,
+      "feasible": true
+    },
+    {
+      "threshold": 0.71,
+      "attack_recall": 0.9317,
+      "natural_recall": 0.8748,
+      "false_alert_rate": 0.1252,
+      "accuracy": 0.9152,
+      "f1_weighted": 0.9157,
+      "feasible": true
+    },
+    {
+      "threshold": 0.715,
+      "attack_recall": 0.9306,
+      "natural_recall": 0.875,
+      "false_alert_rate": 0.125,
+      "accuracy": 0.9145,
+      "f1_weighted": 0.915,
+      "feasible": true
+    },
+    {
+      "threshold": 0.72,
+      "attack_recall": 0.9295,
+      "natural_recall": 0.8756,
+      "false_alert_rate": 0.1244,
+      "accuracy": 0.9139,
+      "f1_weighted": 0.9145,
+      "feasible": true
+    },
+    {
+      "threshold": 0.725,
+      "attack_recall": 0.929,
+      "natural_recall": 0.8781,
+      "false_alert_rate": 0.1219,
+      "accuracy": 0.9143,
+      "f1_weighted": 0.9149,
+      "feasible": true
+    },
+    {
+      "threshold": 0.73,
+      "attack_recall": 0.9283,
+      "natural_recall": 0.8794,
+      "false_alert_rate": 0.1206,
+      "accuracy": 0.9141,
+      "f1_weighted": 0.9148,
+      "feasible": true
+    },
+    {
+      "threshold": 0.735,
+      "attack_recall": 0.9266,
+      "natural_recall": 0.8811,
+      "false_alert_rate": 0.1189,
+      "accuracy": 0.9134,
+      "f1_weighted": 0.9142,
+      "feasible": true
+    },
+    {
+      "threshold": 0.74,
+      "attack_recall": 0.9256,
+      "natural_recall": 0.882,
+      "false_alert_rate": 0.118,
+      "accuracy": 0.913,
+      "f1_weighted": 0.9138,
+      "feasible": true
+    },
+    {
+      "threshold": 0.745,
+      "attack_recall": 0.9247,
+      "natural_recall": 0.8822,
+      "false_alert_rate": 0.1178,
+      "accuracy": 0.9124,
+      "f1_weighted": 0.9132,
+      "feasible": true
+    },
+    {
+      "threshold": 0.75,
+      "attack_recall": 0.924,
+      "natural_recall": 0.8829,
+      "false_alert_rate": 0.1171,
+      "accuracy": 0.9121,
+      "f1_weighted": 0.9129,
+      "feasible": true
+    },
+    {
+      "threshold": 0.755,
+      "attack_recall": 0.923,
+      "natural_recall": 0.8833,
+      "false_alert_rate": 0.1167,
+      "accuracy": 0.9115,
+      "f1_weighted": 0.9124,
+      "feasible": true
+    },
+    {
+      "threshold": 0.76,
+      "attack_recall": 0.9219,
+      "natural_recall": 0.8847,
+      "false_alert_rate": 0.1153,
+      "accuracy": 0.9111,
+      "f1_weighted": 0.912,
+      "feasible": true
+    },
+    {
+      "threshold": 0.765,
+      "attack_recall": 0.9204,
+      "natural_recall": 0.8858,
+      "false_alert_rate": 0.1142,
+      "accuracy": 0.9104,
+      "f1_weighted": 0.9114,
+      "feasible": true
+    },
+    {
+      "threshold": 0.77,
+      "attack_recall": 0.9199,
+      "natural_recall": 0.8877,
+      "false_alert_rate": 0.1123,
+      "accuracy": 0.9106,
+      "f1_weighted": 0.9116,
+      "feasible": true
+    },
+    {
+      "threshold": 0.775,
+      "attack_recall": 0.9187,
+      "natural_recall": 0.8895,
+      "false_alert_rate": 0.1105,
+      "accuracy": 0.9102,
+      "f1_weighted": 0.9113,
+      "feasible": true
+    },
+    {
+      "threshold": 0.78,
+      "attack_recall": 0.9175,
+      "natural_recall": 0.8904,
+      "false_alert_rate": 0.1096,
+      "accuracy": 0.9097,
+      "f1_weighted": 0.9108,
+      "feasible": true
+    },
+    {
+      "threshold": 0.785,
+      "attack_recall": 0.916,
+      "natural_recall": 0.8908,
+      "false_alert_rate": 0.1092,
+      "accuracy": 0.9087,
+      "f1_weighted": 0.9099,
+      "feasible": true
+    },
+    {
+      "threshold": 0.79,
+      "attack_recall": 0.9147,
+      "natural_recall": 0.8913,
+      "false_alert_rate": 0.1087,
+      "accuracy": 0.9079,
+      "f1_weighted": 0.9091,
+      "feasible": true
+    },
+    {
+      "threshold": 0.795,
+      "attack_recall": 0.9132,
+      "natural_recall": 0.8928,
+      "false_alert_rate": 0.1072,
+      "accuracy": 0.9073,
+      "f1_weighted": 0.9086,
+      "feasible": true
+    },
+    {
+      "threshold": 0.8,
+      "attack_recall": 0.912,
+      "natural_recall": 0.8937,
+      "false_alert_rate": 0.1063,
+      "accuracy": 0.9067,
+      "f1_weighted": 0.908,
+      "feasible": true
+    },
+    {
+      "threshold": 0.805,
+      "attack_recall": 0.9103,
+      "natural_recall": 0.8954,
+      "false_alert_rate": 0.1046,
+      "accuracy": 0.906,
+      "f1_weighted": 0.9074,
+      "feasible": true
+    },
+    {
+      "threshold": 0.81,
+      "attack_recall": 0.9078,
+      "natural_recall": 0.8961,
+      "false_alert_rate": 0.1039,
+      "accuracy": 0.9044,
+      "f1_weighted": 0.9059,
+      "feasible": true
+    },
+    {
+      "threshold": 0.815,
+      "attack_recall": 0.9057,
+      "natural_recall": 0.8972,
+      "false_alert_rate": 0.1028,
+      "accuracy": 0.9032,
+      "f1_weighted": 0.9048,
+      "feasible": true
+    },
+    {
+      "threshold": 0.82,
+      "attack_recall": 0.9039,
+      "natural_recall": 0.899,
+      "false_alert_rate": 0.101,
+      "accuracy": 0.9025,
+      "f1_weighted": 0.9042,
+      "feasible": true
+    },
+    {
+      "threshold": 0.825,
+      "attack_recall": 0.9016,
+      "natural_recall": 0.9003,
+      "false_alert_rate": 0.0997,
+      "accuracy": 0.9012,
+      "f1_weighted": 0.903,
+      "feasible": true
+    },
+    {
+      "threshold": 0.83,
+      "attack_recall": 0.8994,
+      "natural_recall": 0.9018,
+      "false_alert_rate": 0.0982,
+      "accuracy": 0.9001,
+      "f1_weighted": 0.902,
+      "feasible": true
+    },
+    {
+      "threshold": 0.835,
+      "attack_recall": 0.8974,
+      "natural_recall": 0.9038,
+      "false_alert_rate": 0.0962,
+      "accuracy": 0.8993,
+      "f1_weighted": 0.9013,
+      "feasible": true
+    },
+    {
+      "threshold": 0.84,
+      "attack_recall": 0.8951,
+      "natural_recall": 0.906,
+      "false_alert_rate": 0.094,
+      "accuracy": 0.8983,
+      "f1_weighted": 0.9003,
+      "feasible": true
+    },
+    {
+      "threshold": 0.845,
+      "attack_recall": 0.8928,
+      "natural_recall": 0.9084,
+      "false_alert_rate": 0.0916,
+      "accuracy": 0.8974,
+      "f1_weighted": 0.8995,
+      "feasible": true
+    },
+    {
+      "threshold": 0.85,
+      "attack_recall": 0.8914,
+      "natural_recall": 0.9091,
+      "false_alert_rate": 0.0909,
+      "accuracy": 0.8965,
+      "f1_weighted": 0.8988,
+      "feasible": true
+    },
+    {
+      "threshold": 0.855,
+      "attack_recall": 0.8891,
+      "natural_recall": 0.9109,
+      "false_alert_rate": 0.0891,
+      "accuracy": 0.8954,
+      "f1_weighted": 0.8977,
+      "feasible": true
+    },
+    {
+      "threshold": 0.86,
+      "attack_recall": 0.8858,
+      "natural_recall": 0.912,
+      "false_alert_rate": 0.088,
+      "accuracy": 0.8934,
+      "f1_weighted": 0.8959,
+      "feasible": true
+    },
+    {
+      "threshold": 0.865,
+      "attack_recall": 0.8838,
+      "natural_recall": 0.9142,
+      "false_alert_rate": 0.0858,
+      "accuracy": 0.8926,
+      "f1_weighted": 0.8952,
+      "feasible": true
+    },
+    {
+      "threshold": 0.87,
+      "attack_recall": 0.8798,
+      "natural_recall": 0.9155,
+      "false_alert_rate": 0.0845,
+      "accuracy": 0.8902,
+      "f1_weighted": 0.8929,
+      "feasible": true
+    },
+    {
+      "threshold": 0.875,
+      "attack_recall": 0.8766,
+      "natural_recall": 0.9177,
+      "false_alert_rate": 0.0823,
+      "accuracy": 0.8885,
+      "f1_weighted": 0.8914,
+      "feasible": true
+    },
+    {
+      "threshold": 0.88,
+      "attack_recall": 0.874,
+      "natural_recall": 0.9201,
+      "false_alert_rate": 0.0799,
+      "accuracy": 0.8873,
+      "f1_weighted": 0.8904,
+      "feasible": true
+    },
+    {
+      "threshold": 0.885,
+      "attack_recall": 0.8706,
+      "natural_recall": 0.9214,
+      "false_alert_rate": 0.0786,
+      "accuracy": 0.8853,
+      "f1_weighted": 0.8885,
+      "feasible": true
+    },
+    {
+      "threshold": 0.89,
+      "attack_recall": 0.8664,
+      "natural_recall": 0.9243,
+      "false_alert_rate": 0.0757,
+      "accuracy": 0.8832,
+      "f1_weighted": 0.8866,
+      "feasible": true
+    },
+    {
+      "threshold": 0.895,
+      "attack_recall": 0.8627,
+      "natural_recall": 0.9269,
+      "false_alert_rate": 0.0731,
+      "accuracy": 0.8813,
+      "f1_weighted": 0.8848,
+      "feasible": true
+    },
+    {
+      "threshold": 0.9,
+      "attack_recall": 0.8579,
+      "natural_recall": 0.93,
+      "false_alert_rate": 0.07,
+      "accuracy": 0.8788,
+      "f1_weighted": 0.8825,
+      "feasible": true
+    }
+  ]
+}

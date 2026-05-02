@@ -1,0 +1,3323 @@
+{
+  "timestamp": "2026-04-29T08:51:58.632431",
+  "llm_model": "mistral-nemo:latest",
+  "attack_threshold": 0.6,
+  "classifier": {
+    "model": "LightGBM + isotonic calibration",
+    "alert_threshold": 0.6,
+    "test_set_size": 15676,
+    "n_features": 128,
+    "accuracy": 0.9176,
+    "accuracy_se": 0.002196,
+    "accuracy_ci95": [
+      0.9132,
+      0.9218
+    ],
+    "attack_recall": 0.9448,
+    "attack_recall_se": 0.002165,
+    "attack_recall_ci95": [
+      0.9404,
+      0.9489
+    ],
+    "natural_recall": 0.8512,
+    "natural_recall_se": 0.00528,
+    "natural_recall_ci95": [
+      0.8406,
+      0.8613
+    ],
+    "false_alert_rate": 0.1488,
+    "false_alert_rate_ci95": [
+      0.1387,
+      0.1594
+    ],
+    "f1_weighted": 0.9175,
+    "mcc": 0.7992,
+    "cohen_kappa": 0.7991,
+    "auc_roc": 0.9644,
+    "confusion_matrix": {
+      "TP": 10518,
+      "FN": 615,
+      "FP": 676,
+      "TN": 3867
+    },
+    "roc_curve": {
+      "fpr": [
+        0.0,
+        0.0266,
+        0.0669,
+        0.1424,
+        0.2111,
+        0.298,
+        0.4055,
+        0.7746
+      ],
+      "tpr": [
+        0.0,
+        0.6911,
+        0.8482,
+        0.9416,
+        0.9701,
+        0.9862,
+        0.9933,
+        0.9995
+      ]
+    },
+    "threshold_sweep": [
+      {
+        "threshold": 0.3,
+        "attack_recall": 0.9774,
+        "natural_recall": 0.7649,
+        "false_alert_rate": 0.2351,
+        "f1_weighted": 0.9131
+      },
+      {
+        "threshold": 0.35,
+        "attack_recall": 0.9754,
+        "natural_recall": 0.7731,
+        "false_alert_rate": 0.2269,
+        "f1_weighted": 0.9143
+      },
+      {
+        "threshold": 0.4,
+        "attack_recall": 0.9701,
+        "natural_recall": 0.7889,
+        "false_alert_rate": 0.2111,
+        "f1_weighted": 0.9157
+      },
+      {
+        "threshold": 0.45,
+        "attack_recall": 0.9641,
+        "natural_recall": 0.81,
+        "false_alert_rate": 0.19,
+        "f1_weighted": 0.9181
+      },
+      {
+        "threshold": 0.5,
+        "attack_recall": 0.9536,
+        "natural_recall": 0.8325,
+        "false_alert_rate": 0.1675,
+        "f1_weighted": 0.9178
+      },
+      {
+        "threshold": 0.55,
+        "attack_recall": 0.9536,
+        "natural_recall": 0.8325,
+        "false_alert_rate": 0.1675,
+        "f1_weighted": 0.9178
+      },
+      {
+        "threshold": 0.6,
+        "attack_recall": 0.9448,
+        "natural_recall": 0.8512,
+        "false_alert_rate": 0.1488,
+        "f1_weighted": 0.9175
+      },
+      {
+        "threshold": 0.65,
+        "attack_recall": 0.9321,
+        "natural_recall": 0.8703,
+        "false_alert_rate": 0.1297,
+        "f1_weighted": 0.9147
+      },
+      {
+        "threshold": 0.7,
+        "attack_recall": 0.9308,
+        "natural_recall": 0.8728,
+        "false_alert_rate": 0.1272,
+        "f1_weighted": 0.9145
+      }
+    ]
+  },
+  "rag": {
+    "overall_accuracy": 1.0,
+    "overall_hits": 13,
+    "overall_total": 13,
+    "relay_filtered_accuracy": 1.0,
+    "relay_hits": 11,
+    "relay_total": 11,
+    "test_cases": [
+      {
+        "description": "R1 FDIA - voltage fluctuation, flat impedance",
+        "relay_id": "R1",
+        "sensors": [
+          "R1-PM1:V",
+          "R1-PM2:V",
+          "R1-PA:Z"
+        ],
+        "expected_protocol": "R1-FDIA",
+        "retrieved_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "FAULT-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "R2 FDIA - voltage fluctuation, flat impedance",
+        "relay_id": "R2",
+        "sensors": [
+          "R2-PM1:V",
+          "R2-PM2:V",
+          "R2-PA:Z"
+        ],
+        "expected_protocol": "R2-FDIA",
+        "retrieved_protocols": [
+          "R2-FDIA",
+          "RSCA-01",
+          "FAULT-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "R3 FDIA - voltage anomaly, no current change",
+        "relay_id": "R3",
+        "sensors": [
+          "R3-PM1:V",
+          "R3-PM2:V",
+          "R3:S"
+        ],
+        "expected_protocol": "R3-FDIA",
+        "retrieved_protocols": [
+          "R3-FDIA",
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "R4 FDIA/PM - voltage fluctuation, Relay 4",
+        "relay_id": "R4",
+        "sensors": [
+          "R4-PM1:V",
+          "R4-PM3:V"
+        ],
+        "expected_protocol": "R4-PM",
+        "retrieved_protocols": [
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "RTCI - current collapse + snort log spike",
+        "relay_id": null,
+        "sensors": [
+          "R1-PM4:I",
+          "R1-PM5:I",
+          "snort_log1"
+        ],
+        "expected_protocol": "RTCI-01",
+        "retrieved_protocols": [
+          "EXPECTED-09",
+          "R1-FDIA",
+          "RTCI-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "RSCA - impedance drift + harmonic distortion",
+        "relay_id": "R1",
+        "sensors": [
+          "R1-PA:Z",
+          "R1-PA:ZH"
+        ],
+        "expected_protocol": "RSCA-01",
+        "retrieved_protocols": [
+          "RSCA-01",
+          "R1-FDIA",
+          "PHASE-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "FREQ - frequency deviation all relays",
+        "relay_id": null,
+        "sensors": [
+          "R1:F",
+          "R2:F",
+          "R3:F",
+          "R4:F"
+        ],
+        "expected_protocol": "FREQ-01",
+        "retrieved_protocols": [
+          "R1-FDIA",
+          "FREQ-01",
+          "R3-FDIA"
+        ],
+        "hit": true
+      },
+      {
+        "description": "CURR - current > 150%, phase imbalance",
+        "relay_id": "R2",
+        "sensors": [
+          "R2-PM4:I",
+          "R2-PM5:I",
+          "R2-PM6:I"
+        ],
+        "expected_protocol": "CURR-01",
+        "retrieved_protocols": [
+          "EXPECTED-09",
+          "R2-FDIA",
+          "CURR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "PHASE - phase angle step-change, magnitudes stable",
+        "relay_id": "R3",
+        "sensors": [
+          "R3-PA1:VH",
+          "R3-PA2:VH",
+          "R3-PA3:VH"
+        ],
+        "expected_protocol": "PHASE-01",
+        "retrieved_protocols": [
+          "PHASE-01",
+          "R3-FDIA",
+          "EXPECTED-09"
+        ],
+        "hit": true
+      },
+      {
+        "description": "FAULT - voltage collapse + current surge",
+        "relay_id": "R2",
+        "sensors": [
+          "R2-PM1:V",
+          "R2-PM2:V",
+          "R2-PM4:I"
+        ],
+        "expected_protocol": "FAULT-01",
+        "retrieved_protocols": [
+          "R2-FDIA",
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "DEGR-01 - single sensor slow linear drift",
+        "relay_id": "R4",
+        "sensors": [
+          "R4-PM3:V"
+        ],
+        "expected_protocol": "DEGR-01",
+        "retrieved_protocols": [
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "DEGR-02 - multi-sensor relay-wide drift",
+        "relay_id": "R2",
+        "sensors": [
+          "R2-PM1:V",
+          "R2-PM2:V",
+          "R2-PM3:V",
+          "R2-PM4:I"
+        ],
+        "expected_protocol": "DEGR-02",
+        "retrieved_protocols": [
+          "R2-FDIA",
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      },
+      {
+        "description": "EXPECTED-09 - peak-load switching at 08:00/17:00",
+        "relay_id": "R1",
+        "sensors": [
+          "R1-PM1:V",
+          "R4-PM1:V"
+        ],
+        "expected_protocol": "EXPECTED-09",
+        "retrieved_protocols": [
+          "R1-FDIA",
+          "EXPECTED-09",
+          "R4-PM",
+          "DEGR-01"
+        ],
+        "hit": true
+      }
+    ]
+  },
+  "llm": {
+    "llm_model": "mistral-nemo:latest",
+    "n_samples": 200,
+    "matchable_samples": 200,
+    "any_citation_rate": 0.99,
+    "any_citation_se": 0.007036,
+    "any_citation_ci95": [
+      0.9643,
+      0.9973
+    ],
+    "correct_protocol_rate": 0.845,
+    "correct_protocol_se": 0.025591,
+    "correct_protocol_ci95": [
+      0.7884,
+      0.8886
+    ],
+    "chi2_vs_random": {
+      "null_p": 0.0769,
+      "chi2_stat": 1661.6704,
+      "p_value": 0.0,
+      "reject_h0": true
+    },
+    "results": [
+      {
+        "index": 10742,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 19296,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RTCI-01",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 33258,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM7:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 56707,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 41537,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "FREQ-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 72782,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 3772,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 61933,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 4494,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RTCI-01",
+          "DEGR-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 21350,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 64904,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 14360,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 25130,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.625
+      },
+      {
+        "index": 67133,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 45283,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 62359,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 49904,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 51836,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 74985,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 53204,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 72600,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8542
+      },
+      {
+        "index": 75137,
+        "gt_marker": "Attack",
+        "expected_protocol": "RSCA-01",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PA3:VH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 36221,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PA:ZH",
+        "p_attack": 0.625
+      },
+      {
+        "index": 65146,
+        "gt_marker": "Attack",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "R2-FDIA",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA10:IH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 1829,
+        "gt_marker": "Attack",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R3-FDIA",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3:F",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 71204,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 6544,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 77045,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 61952,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 36346,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 66081,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "FAULT-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 65793,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 258,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 67082,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "RSCA-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 46283,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2:F",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 56964,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "FREQ-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6098
+      },
+      {
+        "index": 46825,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 34883,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 14705,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 21879,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 60636,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 66205,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RTCI-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 49655,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 26883,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8542
+      },
+      {
+        "index": 73243,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6098
+      },
+      {
+        "index": 41729,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4:F",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 56408,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 48455,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9544
+      },
+      {
+        "index": 9925,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 12033,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PA:ZH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 30762,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.625
+      },
+      {
+        "index": 34901,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6452
+      },
+      {
+        "index": 37989,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 51998,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 77957,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 13231,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 24371,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 2958,
+        "gt_marker": "Attack",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2:F",
+        "p_attack": 1.0
+      },
+      {
+        "index": 36455,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 48372,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "FAULT-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 31216,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 53383,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 33864,
+        "gt_marker": "Attack",
+        "expected_protocol": "RSCA-01",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PA12:IH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 34280,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 14144,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 72488,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6098
+      },
+      {
+        "index": 69875,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PA6:IH",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 52098,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R3-FDIA",
+          "FREQ-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3:DF",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 33935,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 30231,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 66730,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 77939,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.6786
+      },
+      {
+        "index": 15422,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 58811,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "FAULT-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 34819,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 15455,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 19534,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 14840,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 41760,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 14399,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 69840,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 11110,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 18013,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM7:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 41461,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "CURR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 78187,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 53424,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 56774,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "FAULT-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 75112,
+        "gt_marker": "Attack",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "R2-FDIA",
+          "RSCA-01",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA:ZH",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 15445,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 17090,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 61174,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8514
+      },
+      {
+        "index": 62946,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 41485,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 75686,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 3882,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 9924,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 68164,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 9116,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 44121,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM4:I",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 68072,
+        "gt_marker": "Natural",
+        "expected_protocol": "RTCI-01",
+        "cited_protocols": [
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 50815,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9544
+      },
+      {
+        "index": 38369,
+        "gt_marker": "Attack",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA",
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PM12:I",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 4934,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 52045,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [],
+        "correct_protocol": false,
+        "any_protocol_cited": false,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 30413,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.6452
+      },
+      {
+        "index": 29334,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9544
+      },
+      {
+        "index": 36812,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 58546,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 25448,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 62589,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6452
+      },
+      {
+        "index": 61582,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 26591,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 40077,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 52041,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.6786
+      },
+      {
+        "index": 27750,
+        "gt_marker": "Attack",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PM12:I",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 77387,
+        "gt_marker": "Natural",
+        "expected_protocol": "RTCI-01",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 39007,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RTCI-01",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 22991,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PA:Z",
+        "p_attack": 1.0
+      },
+      {
+        "index": 19212,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9288
+      },
+      {
+        "index": 7469,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PA12:IH",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 17545,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 19862,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 20212,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA:ZH",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 39856,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 76531,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 76352,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1:DF",
+        "p_attack": 1.0
+      },
+      {
+        "index": 46558,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8514
+      },
+      {
+        "index": 34774,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 58623,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 39148,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 57379,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 24090,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 61123,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 24403,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 12916,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 61555,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 24528,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 56758,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "RTCI-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.625
+      },
+      {
+        "index": 18189,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PA5:IH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 39990,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 45031,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 76600,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 19115,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2:F",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 7796,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 22739,
+        "gt_marker": "Attack",
+        "expected_protocol": "DEGR-02",
+        "cited_protocols": [],
+        "correct_protocol": false,
+        "any_protocol_cited": false,
+        "relay_id": "R2",
+        "top_driver": "R2-PA4:IH",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 18662,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 34256,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 25701,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.6098
+      },
+      {
+        "index": 53404,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 48295,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 14523,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6452
+      },
+      {
+        "index": 36387,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 47515,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 17687,
+        "gt_marker": "Attack",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "R2-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "PHASE-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA6:IH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 48945,
+        "gt_marker": "Attack",
+        "expected_protocol": "CURR-01",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PM5:I",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 61200,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 57202,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 60726,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9444
+      },
+      {
+        "index": 64695,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "RSCA-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PA:Z",
+        "p_attack": 1.0
+      },
+      {
+        "index": 21201,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 25930,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9895
+      },
+      {
+        "index": 9543,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 19925,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "FREQ-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM1:V",
+        "p_attack": 0.6098
+      },
+      {
+        "index": 46174,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.6452
+      },
+      {
+        "index": 32712,
+        "gt_marker": "Attack",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R2-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2:F",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 37311,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 66251,
+        "gt_marker": "Natural",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "R2-FDIA",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA:ZH",
+        "p_attack": 0.8542
+      },
+      {
+        "index": 17437,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 10240,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 59961,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "CURR-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 29885,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 75434,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM7:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 58772,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R4-PM",
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 37900,
+        "gt_marker": "Attack",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "PHASE-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 20102,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 62542,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 20638,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 21498,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 62413,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 77458,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "R4-PM",
+          "CURR-01"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 40590,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PA:ZH",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 70047,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "FAULT-01",
+          "DEGR-01",
+          "DEGR-02",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 25703,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 77743,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 36158,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 31135,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 71354,
+        "gt_marker": "Attack",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9979
+      },
+      {
+        "index": 24461,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.7411
+      },
+      {
+        "index": 12550,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 53924,
+        "gt_marker": "Attack",
+        "expected_protocol": "R2-FDIA",
+        "cited_protocols": [
+          "PHASE-01"
+        ],
+        "correct_protocol": false,
+        "any_protocol_cited": true,
+        "relay_id": "R2",
+        "top_driver": "R2-PA3:VH",
+        "p_attack": 1.0
+      },
+      {
+        "index": 25641,
+        "gt_marker": "Natural",
+        "expected_protocol": "FREQ-01",
+        "cited_protocols": [
+          "R4-PM",
+          "FREQ-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "relay2_log",
+        "p_attack": 0.8878
+      },
+      {
+        "index": 61938,
+        "gt_marker": "Natural",
+        "expected_protocol": "R1-FDIA",
+        "cited_protocols": [
+          "R1-FDIA",
+          "RTCI-01",
+          "CURR-01",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R1",
+        "top_driver": "R1-PM2:V",
+        "p_attack": 0.8178
+      },
+      {
+        "index": 10761,
+        "gt_marker": "Attack",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9253
+      },
+      {
+        "index": 56706,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 39516,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 19121,
+        "gt_marker": "Natural",
+        "expected_protocol": "R4-PM",
+        "cited_protocols": [
+          "R4-PM",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R4",
+        "top_driver": "R4-PM2:V",
+        "p_attack": 0.8112
+      },
+      {
+        "index": 77053,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9826
+      },
+      {
+        "index": 65118,
+        "gt_marker": "Attack",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "RSCA-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM3:V",
+        "p_attack": 1.0
+      },
+      {
+        "index": 40092,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.9697
+      },
+      {
+        "index": 20310,
+        "gt_marker": "Natural",
+        "expected_protocol": "R3-FDIA",
+        "cited_protocols": [
+          "R3-FDIA",
+          "DEGR-01",
+          "EXPECTED-09"
+        ],
+        "correct_protocol": true,
+        "any_protocol_cited": true,
+        "relay_id": "R3",
+        "top_driver": "R3-PM2:V",
+        "p_attack": 0.8878
+      }
+    ]
+  }
+}
