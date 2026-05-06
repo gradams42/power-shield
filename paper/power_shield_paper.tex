@@ -64,7 +64,13 @@ for Power Grid Attack Detection and LLM-Guided Remediation}
   from thirteen operator-written grid-protocol manuals.
   Candidates are reranked by a cross-encoder before being passed to a locally hosted
   Mistral-Nemo LLM that reasons via a structured Chain-of-Thought (CoT) step before
-  generating step-by-step remediation advice. Within this paper, I will show an end-to-end evaluation demonstrates that the full AYLA pipeline is feasible and applicable to operational ICS security.
+  generating step-by-step remediation advice.
+  Critically, Stages 2--4 (SHAP, RAG, and LLM) activate only when Stage 1 flags an
+  event as a suspected attack or degradation---not on every incoming sensor
+  snapshot---so the computationally intensive LLM inference is incurred only on the
+  small fraction of readings that genuinely require operator explanation, making the
+  pipeline practical for real-time SCADA deployment on commodity hardware.
+  An end-to-end evaluation demonstrates that the full AYLA pipeline is feasible and applicable to operational ICS security.
   \end{abstract}
   \vspace{1em}
 }]
@@ -108,6 +114,15 @@ Language Models (LLMs) have demonstrated the ability to synthesize structured
 knowledge with natural-language generation, opening a path toward fully automated,
 human-readable incident response.
 
+Prior work achieving high detection accuracy on the MSU/ORNL power grid dataset
+\cite{panthi2022ensemble,naeem2025deep,graphkan2025} evaluates classifiers on
+individual attack sub-scenarios in isolation, eliminating the inter-class ambiguity
+that characterises combined-dataset deployment.
+The only prior work to apply explainability to the combined MSU/ORNL dataset
+\cite{shapgrid2026} demonstrates SHAP-based feature attribution but does not extend
+to automated protocol retrieval or operator remediation---the operational gap
+that motivates AYLA.
+
 \textbf{Power Shield} implements an \textbf{Automated Yield-Loss Alerting (AYLA)}
 pipeline that unifies these advances into a single end-to-end system.
 Its principal contributions are:
@@ -121,15 +136,26 @@ Its principal contributions are:
           \texttt{R3-PM2:V} $\rightarrow$ \texttt{R3-PM2:V (voltage magnitude)})
           before forming the retrieval query, improving embedding alignment with
           protocol language.
-          The use of SHAP attributions as retrieval keys for RAG query construction
-          is, to the author's knowledge, novel.
+          Prior work applies SHAP to grid security and intrusion detection for
+          post-hoc feature explanation \cite{shap_ids,shapgrid2026};
+          AYLA instead uses per-event SHAP attributions as the \textit{retrieval
+          query} submitted to the vector store, directly linking the classifier's
+          explanation layer to document retrieval.
+          To the author's knowledge, this use of per-event SHAP attributions
+          as semantic retrieval keys is novel.
 
-    \item[\textbf{C2.}] \textbf{Cross-encoder reranking for protocol disambiguation.}
+    \item[\textbf{C2.}] \textbf{Cross-encoder reranking for transparent protocol disambiguation (XAI).}
           Bi-encoder multi-pass retrieval first discovers both relay-specific and
           generic protocol candidates; a cross-encoder then rescores each candidate
           jointly against the primary query, producing relevance signals directly
           comparable across all retrieval passes and eliminating secondary-query
           score pollution without sacrificing generic-protocol recall.
+          The ranked candidate list with explicit cross-encoder scores constitutes
+          an XAI artifact: for each alert, operators and auditors can inspect
+          exactly which protocol documents were considered, their relative
+          relevance scores, and why the top-ranked document was selected---providing
+          a transparent, traceable decision trail that supports post-hoc review
+          without relying on black-box inference.
 
     \item[\textbf{C3.}] \textbf{Chain-of-Thought protocol selection.} The LLM prompt structures
           the response to require an explicit reasoning step that checks the
@@ -137,13 +163,17 @@ Its principal contributions are:
           sensor pattern before committing to a diagnosis, yielding measurably
           higher protocol attribution accuracy than a passive retrieval hint.
 
-    \item[\textbf{C4.}] \textbf{Statistical proof of LLM explainability.}
-          AYLA's 100\% RAG retrieval accuracy and 90.5\% LLM protocol attribution
-          ($\chi^2 = 1931.42$, $p < 10^{-10}$ vs.\ the random-selection null
-          hypothesis of $p_0 = 1/13 \approx 0.077$) statistically demonstrate that
-          the LLM is genuinely grounding its responses in the retrieved protocol
-          manuals rather than guessing, providing rigorous proof that the
-          AYLA pipeline is feasible and applicable.
+    \item[\textbf{C4.}] \textbf{Ablation-confirmed LLM grounding in retrieved context.}
+          A no-context ablation withholds retrieved protocol documents from the LLM
+          prompt while keeping all other inputs---SHAP drivers, sensor readings,
+          classifier verdict---identical.
+          Attribution accuracy drops from 90.5\% to \textbf{16.5\%}
+          (33/200, 95\% CI [12.0\%, 22.3\%])---a \textbf{74.0 percentage-point
+          decline}---confirming that the full-pipeline accuracy reflects genuine
+          grounding in retrieved documents rather than parametric knowledge.
+          A $\chi^2$ goodness-of-fit test ($\chi^2 = 1931.42$, $p < 10^{-10}$)
+          further confirms performance far exceeds the random-selection baseline
+          ($p_0 = 1/13 \approx 0.077$).
 
     \item[\textbf{C5.}] \textbf{Comparison with real-world deployed ICS security systems.}
           AYLA is compared against current commercial ICS/OT platforms (Claroty,
@@ -275,6 +305,13 @@ real-time grid operations on commodity hardware.
 The AYLA pipeline processes each grid event through four sequential stages.
 Stages 1 and 2 operate on raw sensor data; Stages 3 and 4 operate on the symbolic
 output of Stage 2.
+A key design property is that Stages 2--4 (SHAP attribution, RAG retrieval, and
+LLM remediation) activate only when Stage 1 exceeds the alert threshold $\tau$:
+the classifier runs at machine speed on every incoming sensor snapshot, while the
+computationally intensive LLM inference is reserved for the small fraction of
+events that actually require operator explanation and remediation guidance.
+This event-driven design is what makes the pipeline viable for real-time deployment
+without dedicated high-throughput inference infrastructure.
 
 \medskip
 \noindent
@@ -455,6 +492,12 @@ LLM's generated text.
 Protocol attribution is also tested against the random-selection null hypothesis
 ($p_0 = 1/13 \approx 0.077$) using a $\chi^2$ goodness-of-fit test.
 
+\textbf{No-context ablation} re-evaluates the same 200 samples with the retrieved
+protocol context replaced by a placeholder, keeping all other prompt inputs
+(SHAP drivers, sensor readings, classifier verdict) identical.
+The accuracy drop between conditions isolates the contribution of RAG
+retrieval to LLM attribution accuracy.
+
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Results}
 \label{sec:results}
@@ -592,10 +635,41 @@ DEGR-02     & 2   & 1  (50.0\%)  & R2-FDIA mix $\times$1 \\
 \end{tabular}
 \end{table*}
 
-The $\chi^2$ statistic of 1931.42 ($p < 10^{-10}$) provides rigorous
-statistical proof that AYLA's LLM is not selecting protocols at random.
-Combined with 100\% RAG retrieval accuracy, this demonstrates that the LLM
-is genuinely grounding its responses in the retrieved protocol manuals.
+The $\chi^2$ statistic of 1931.42 ($p < 10^{-10}$) confirms full-pipeline
+performance far exceeds the random-selection baseline ($p_0 = 1/13$).
+
+\textbf{No-context ablation.}
+To directly confirm that this accuracy reflects grounding in retrieved documents
+rather than parametric knowledge, the same 200 samples were re-evaluated with
+the protocol context withheld from the LLM prompt; all other inputs remained
+identical.
+
+\begin{table}[H]
+\centering
+\caption{No-context ablation: LLM protocol attribution with and without
+         retrieved context (same 200 samples, identical prompt structure).}
+\label{tab:ablation}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Condition} & \textbf{Correct} & \textbf{95\% CI} \\
+\midrule
+Full pipeline (w/ RAG context) & 181/200 (90.5\%) & [85.6\%, 93.8\%] \\
+No-context ablation            &  33/200 (16.5\%) & [12.0\%, 22.3\%] \\
+\midrule
+Accuracy drop & \multicolumn{2}{r}{$-74.0$~pp} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Without context, attribution accuracy drops to 16.5\%---a 74.0~pp decline
+(Table~\ref{tab:ablation}).
+The no-context LLM collapses to citing a single default protocol (R4-PM)
+for nearly all events regardless of relay identity or sensor type, consistent
+with parametric guessing rather than document-grounded reasoning.
+The non-overlapping 95\% confidence intervals ([85.6\%, 93.8\%] vs.\
+[12.0\%, 22.3\%]) confirm the gap is statistically unambiguous.
 
 RTCI-01 is the dominant remaining failure mode (0/7 = 0\%).
 When the ground truth is RTCI-01, the alert sensors are typically phase angle or
@@ -682,9 +756,17 @@ however, the ensemble's SHAP attribution frequently elevates phase-angle or
 current-harmonic sensors above the log channels when both co-occur.
 When log channels do not surface as the primary SHAP driver, the RAG query
 lacks the vocabulary to distinguish RTCI-01 from relay-specific FDIA scenarios.
-A targeted fix---promoting log channel drivers in the RAG query when Snort logs
-are active, regardless of relative SHAP rank---would likely resolve this failure
-class without retrieval changes.
+A targeted fix was attempted: promoting Snort log channel drivers in the RAG
+query when they are active, regardless of relative SHAP rank.
+However, this approach introduced new attribution failures in other protocol
+classes---Snort log activity co-occurs with multiple attack types, so
+unconditionally promoting log channels over-retrieves RTCI-01 for events that
+are actually relay-specific FDIA or FREQ-01.
+RTCI-01 therefore remains an open failure class.
+Resolving it likely requires a fundamentally different approach---such as a
+dedicated log-channel detection stage that treats Snort spikes as a hard
+retrieval filter, or a protocol-aware query template that separates the
+log-channel signal from the sensor-type signal before retrieval.
 
 FREQ-01 improved substantially with cross-encoder reranking (0\% $\to$ 75.0\%),
 confirming that the fundamental barrier was score incomparability across retrieval
@@ -742,13 +824,15 @@ ensemble achieves AUC-ROC 0.9665, MCC 0.8020, and attack recall 94.6\% at
 $\tau{=}0.560$, surpassing the Hink et al.\ \cite{hink2014ml} combined-dataset
 baseline (90.56\%) on the full heterogeneous MSU/ORNL dataset.
 
-\textbf{Second, LLM explainability proven statistically}: AYLA achieves 100\%
+\textbf{Second, LLM grounding confirmed by ablation}: AYLA achieves 100\%
 RAG retrieval accuracy across all 13 protocol test cases and 90.5\% correct
 protocol citation (181/200, 95\% CI [85.6\%, 93.8\%]).
-A $\chi^2$ goodness-of-fit test ($\chi^2 = 1931.42$, $p < 10^{-10}$)
-provides rigorous statistical proof that the LLM is genuinely grounding its
-responses in the retrieved protocol manuals---not selecting protocols randomly---
-demonstrating that the AYLA pipeline is both feasible and interpretably grounded.
+A no-context ablation---identical prompts with retrieved documents withheld---
+drops attribution accuracy to 16.5\% (33/200, 95\% CI [12.0\%, 22.3\%]),
+a 74.0~pp decline with non-overlapping confidence intervals that directly
+confirms the LLM is grounding its responses in the retrieved protocol manuals.
+A $\chi^2$ test ($\chi^2 = 1931.42$, $p < 10^{-10}$) further confirms
+full-pipeline performance far exceeds the random-selection baseline.
 
 \textbf{Third, comparison with deployed systems}: unlike current commercial ICS
 security platforms (Claroty, Dragos, Nozomi Networks), which provide passive

@@ -1,0 +1,435 @@
+%% Power Shield: AYLA Pipeline — Condensed 6-Page Journal Submission
+%% Compile with: pdflatex -> bibtex -> pdflatex -> pdflatex
+
+\documentclass[twocolumn, 10pt, letterpaper]{article}
+
+\usepackage[top=0.75in, bottom=0.75in, left=0.65in, right=0.65in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{microtype}
+\setlength{\columnsep}{18pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\title{\textbf{Power Shield:}\\
+An Automated Yield-Loss Alerting (AYLA) Pipeline\\
+Using Explainable AI (XAI) and Machine Learning (ML)\\
+for Power Grid Attack Detection and LLM-Guided Remediation}
+
+\author{
+    Gabriel Adams\\
+    \textit{Department of Computer Science}\\
+    \textit{Tennessee Technological University}
+}
+
+\date{May 2026}
+
+\begin{document}
+
+\twocolumn[{%
+  \maketitle
+  \begin{abstract}
+  Power grids face coordinated cyber-physical attacks---including False Data Injection
+  (FDIA), Relay Saturation, and Remote Terminal Communication Injection---designed to
+  evade conventional anomaly detectors by mimicking plausible physical behavior.
+  This paper presents \textbf{Power Shield}, implementing an
+  \textbf{Automated Yield-Loss Alerting (AYLA)} pipeline: a four-stage explainable AI
+  system that detects grid attacks, attributes each alert to specific sensor drivers via
+  SHAP, retrieves the matching remediation protocol via RAG, and delivers step-by-step
+  operator guidance via a local LLM.
+  The SHAP-guided stacked ensemble achieves \textbf{91.88\%} accuracy and
+  \textbf{94.6\%} attack recall on the full combined MSU/ORNL SCADA dataset
+  (78,377 samples), surpassing the established combined-dataset baseline.
+  Stages 2--4 (SHAP, RAG, and LLM) activate only on classifier-flagged events,
+  not on every sensor reading, so the expensive LLM inference is incurred only
+  when explanation and remediation are genuinely needed.
+  A no-context ablation confirms LLM grounding: withholding retrieved protocol
+  documents drops attribution accuracy from \textbf{90.5\%} to \textbf{16.5\%}
+  ($-74.0$~pp, non-overlapping 95\% CIs), proving that pipeline accuracy reflects
+  genuine document grounding rather than parametric knowledge.
+  \end{abstract}
+  \vspace{1em}
+}]
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Power grids are among the most critical infrastructure systems in modern society.
+State-sponsored attacks---including the Ukrainian blackouts of 2015--2016
+\cite{liang2017ukraine}---demonstrated that adversaries can weaponize SCADA control
+software with devastating physical consequences.
+ICS attacks increased by over 140\% between 2020 and 2024.
+
+Traditional SCADA intrusion detection relies on rule-based signature matching that
+fails against False Data Injection Attacks (FDIA), which craft a sensor manipulation
+vector that passes the bad-data detection residual test \cite{liu2011fdia}.
+Machine learning classifiers have emerged as a complement to signature-based systems,
+learning multi-variate anomaly patterns directly from sensor data.
+However, detection alone is insufficient: an operator who receives an alert without
+knowing \textit{which} sensors triggered it, \textit{which} attack scenario it matches,
+and \textit{what} corrective steps to take is at best slowed and at worst misled.
+Current commercial ICS/OT platforms (Claroty, Dragos, Nozomi Networks) surface alerts
+but do not generate automated, grounded, step-by-step remediation guidance.
+
+A critical methodological distinction separates prior literature on the
+MSU/ORNL power grid dataset: prior work achieving high detection accuracy
+\cite{panthi2022ensemble,naeem2025deep,graphkan2025} evaluates classifiers on
+individual attack sub-scenarios \textit{in isolation}, eliminating the inter-class
+ambiguity that characterises combined-dataset deployment.
+The only prior work applying explainability to the \textit{combined} MSU/ORNL dataset
+\cite{shapgrid2026} demonstrates SHAP feature attribution but does not extend
+to automated protocol retrieval or operator remediation.
+
+\textbf{Power Shield} implements AYLA to close this gap end-to-end.
+Its three principal contributions are:
+
+\begin{enumerate}
+    \item[\textbf{C1.}] \textbf{SHAP-guided RAG query construction.}
+          Per-event SHAP attributions identify the top contributing sensors
+          and enrich their names with semantic type descriptors
+          (e.g., \texttt{R1-PA:ZH} $\rightarrow$ \texttt{R1-PA:ZH (impedance harmonic)})
+          before forming the RAG retrieval query, directly linking the classifier's
+          explanation layer to document retrieval.
+          Prior work uses SHAP for post-hoc feature explanation
+          \cite{shap_ids,shapgrid2026};
+          AYLA uses per-event attributions as \textit{semantic retrieval keys}---to
+          the author's knowledge, a novel application.
+
+    \item[\textbf{C2.}] \textbf{Ablation-confirmed LLM grounding (XAI transparency verification).}
+          A no-context ablation withholds retrieved protocol documents while keeping
+          all other prompt inputs (SHAP drivers, sensor readings, classifier verdict)
+          identical.
+          Attribution accuracy drops from 90.5\% to 16.5\%---a 74.0~pp decline
+          with non-overlapping 95\% CIs---directly confirming that full-pipeline
+          accuracy reflects genuine document grounding, not parametric knowledge.
+          This ablation is an XAI-style transparency verification: it proves
+          empirically that the pipeline's recommendations trace to specific
+          retrieved protocol documents rather than opaque parametric memory,
+          establishing end-to-end decision traceability from sensor reading
+          through SHAP attribution, retrieval, and LLM reasoning.
+
+    \item[\textbf{C3.}] \textbf{Combined-dataset evaluation surpassing the baseline.}
+          AYLA operates on the full heterogeneous MSU/ORNL dataset and surpasses the
+          Hink et al.\ \cite{hink2014ml} combined-dataset baseline (90.56\%)---the only
+          prior result directly comparable to a combined-dataset formulation---while
+          adding SHAP attribution, RAG protocol retrieval, and LLM-guided remediation.
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{System Architecture}
+\label{sec:system}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The AYLA pipeline processes each grid event through four sequential stages.
+Stages 1--2 operate on raw sensor data; Stages 3--4 operate on the symbolic output
+of Stage 2.
+Critically, Stages 2--4 (SHAP attribution, RAG retrieval, and LLM remediation)
+activate only when Stage 1 exceeds $\tau$: the classifier runs at machine speed on
+every incoming sensor snapshot, while LLM inference is reserved for the small
+fraction of events that require explanation and remediation.
+This event-driven design makes the pipeline viable for real-time SCADA deployment
+without high-throughput inference infrastructure.
+
+\medskip\noindent
+\textbf{Stage 1 --- Probabilistic Classification.}
+A LightGBM/XGBoost stacked ensemble trained on 29 SHAP-selected features
+(from an initial pool of 128) ingests a sensor snapshot and outputs
+$P(\text{Attack})$ via a LogisticRegression meta-learner.
+If $P(\text{Attack}) > \tau = 0.560$, the event is flagged and passed to Stage~2.
+
+\medskip\noindent
+\textbf{Stage 2 --- SHAP Attribution.}
+TreeSHAP \cite{lundberg2020treeshap} computes exact SHAP values for all 128 features
+via the LightGBM base model.
+The top-$k$ positive contributors (sensors pushing toward Attack) are selected
+as \textit{alert drivers} and expanded to semantic descriptors using a relay-and-type
+regex registry.
+SCADA, relay, and Snort IDS log channels are reported independently from physical
+sensor drivers.
+
+\medskip\noindent
+\textbf{Stage 3 --- RAG Protocol Retrieval.}
+A two-phase retrieval strategy queries a ChromaDB vector store indexed from
+thirteen operator-written grid-protocol manuals using \texttt{all-MiniLM-L6-v2}
+sentence embeddings.
+\textit{Phase~1} (bi-encoder, multi-pass): a relay-filtered primary query ($k{=}4$)
+surfaces relay-specific FDIA protocols; supplementary type-pattern queries ($k{=}2$)
+surface generic protocols.
+\textit{Phase~2} (cross-encoder reranking, adopted from IHGR-RAG
+\cite{ihgrrag2025}): all candidates are rescored jointly against the primary query
+by a \texttt{ms-marco-MiniLM-L-6-v2} cross-encoder, producing scores comparable
+across all retrieval passes regardless of which pass found each candidate.
+
+\medskip\noindent
+\textbf{Stage 4 --- LLM Remediation.}
+The ranked protocol context, SHAP summary, sensor readings, and classifier verdict
+are assembled into a structured prompt.
+A Chain-of-Thought (CoT) \cite{wei2022cot} step instructs the LLM to explicitly
+verify the RANK~\#1 protocol's diagnostic signature against the observed sensors
+before committing to a diagnosis.
+The model outputs: (1)~Protocol Match Reasoning, (2)~Diagnosis with protocol ID,
+and (3)~numbered remediation steps drawn directly from the matched manual.
+
+\begin{table*}[t]
+\centering
+\caption{AYLA system component configuration.}
+\label{tab:config}
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Configuration} \\
+\midrule
+Classifier        & LightGBM \cite{ke2017lightgbm} + XGBoost \cite{chen2016xgboost}
+                    ensemble (29/128 SHAP-selected features) \\
+Meta-learner      & LogisticRegression ($\beta_1{=}6.74$, $\beta_2{=}0.68$) \\
+Alert threshold   & $\tau = 0.560$ (threshold-sweep optimised; false alert $< 15\%$) \\
+SHAP              & TreeSHAP \cite{lundberg2020treeshap} (exact; LightGBM base model;
+                    zero-padded to 128-d) \\
+Embedding model   & \texttt{all-MiniLM-L6-v2} (384-dim); ChromaDB (L2 distance) \\
+RAG Phase 1       & Bi-encoder; $k{=}4$ relay-filtered + $k{=}2$ type-pattern passes \\
+RAG Phase 2       & Cross-encoder reranking (\texttt{ms-marco-MiniLM-L-6-v2}) \\
+LLM               & Mistral-Nemo 12B (Ollama, local; temperature 0.0; max 2048 tokens) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Mathematical Formulation}
+\label{sec:math}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textbf{SHAP-guided feature selection.}
+An initial LightGBM model trained on all $d{=}128$ features computes global
+mean absolute SHAP importance on a 3000-sample hold-out.
+Features whose mean absolute SHAP value meets or exceeds the mean across all
+128 features are retained, reducing $d{=}128$ to $d'{=}29$ features.
+
+\textbf{Ensemble stacking.}
+A LogisticRegression meta-learner combines LightGBM and XGBoost
+attack probabilities on a held-out calibration set:
+\begin{equation}
+    P(\text{Attack} \mid \mathbf{x}) =
+    \sigma\!\left(\beta_0
+    + \beta_1 P_{\text{LGB}}(\mathbf{x}_S)
+    + \beta_2 P_{\text{XGB}}(\mathbf{x}_S)\right)
+    \label{eq:stack}
+\end{equation}
+where $\mathbf{x}_S$ is the 29-feature SHAP-selected subset,
+$\beta_1 = 6.74$, $\beta_2 = 0.68$, and $\tau = 0.560$ is selected by
+sweeping $[0.30, 0.90]$ subject to false alert rate $< 15\%$.
+
+\textbf{Cross-encoder reranking.}
+For primary query $q$ and candidate document $d_j$, the cross-encoder
+$f_{\text{CE}}$ scores each pair jointly:
+\begin{equation}
+    \hat{s}_j = f_{\text{CE}}(q, d_j) + f_{\text{CE}}(q_{\text{freq}}, d_j)
+    \label{eq:ce}
+\end{equation}
+where $q_{\text{freq}}$ is added only when frequency sensors
+(\texttt{:F}, \texttt{:DF}) dominate the alert drivers, boosting FREQ-01
+retrieval without penalising relay-specific FDIA cases.
+Unlike bi-encoder L2 scores, cross-encoder scores are directly comparable
+across all retrieval passes.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Dataset and Experimental Setup}
+\label{sec:setup}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Dataset}
+
+Experiments use the MSU/ORNL ICS Security Dataset \cite{morris2014ics},
+a widely used power system intrusion detection benchmark generated on a
+hardware-in-the-loop testbed with a 4-relay transmission protection system
+communicating via DNP3 and Modbus over a simulated SCADA network.
+The binary variant contains \textbf{78,377 samples} with \textbf{128 features}:
+voltage and current magnitudes, impedance and phase harmonics, relay-level
+frequency measurements, and SCADA/relay/Snort IDS log channels, spanning
+four protection relays (R1--R4).
+The class distribution is 55,663 Attack (71.0\%) and 22,714 Natural (29.0\%)
+(2.45:1 imbalance, corrected via \texttt{is\_unbalance=True} and
+\texttt{scale\_pos\_weight}).
+Data is split 64/16/20 into training, calibration, and held-out test sets
+($n{=}15{,}676$ test samples).
+
+\subsection{Protocol Knowledge Base}
+
+Thirteen operator-written protocol documents are indexed into ChromaDB using
+700-character chunks with 100-character overlap.
+The protocols span relay-specific FDIA scenarios (R1-FDIA through R4-PM),
+generic anomaly classes (RSCA-01, RTCI-01, FREQ-01), fault and degradation
+scenarios (CURR-01, PHASE-01, FAULT-01, DEGR-01, DEGR-02), and a
+normal-operation baseline (EXPECTED-09).
+
+\subsection{Evaluation Protocol}
+
+\textbf{Classifier evaluation} uses the full 15,676-sample held-out test set.
+
+\textbf{RAG retrieval accuracy} is assessed on 13 hand-crafted test cases
+(one per protocol); a case is a hit if the expected protocol identifier appears
+anywhere in the retrieved context.
+
+\textbf{LLM attribution accuracy} is evaluated on a stratified random sample of
+200 triggered events.
+Ground truth is assigned by matching top SHAP sensors against curated protocol
+sensor lists via a weighted overlap score; a response is correct if the expected
+protocol ID appears anywhere in the LLM output.
+
+\textbf{No-context ablation} re-evaluates the same 200 samples with the retrieved
+protocol context replaced by a placeholder, holding all other prompt inputs
+constant.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Classifier Performance}
+
+\begin{table}[H]
+\centering
+\caption{AYLA ensemble classifier on the held-out 20\% test set
+         ($n{=}15{,}676$). CIs are Wilson 95\%.}
+\label{tab:classifier}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{95\% CI} \\
+\midrule
+Overall Accuracy   & 91.88\% & [91.44\%, 92.30\%] \\
+Attack Recall      & 94.55\% & [94.11\%, 94.95\%] \\
+Natural Recall     & 85.34\% & [84.28\%, 86.34\%] \\
+False Alert Rate   & 14.66\% & [13.66\%, 15.72\%] \\
+AUC-ROC / MCC      & 0.9665  & 0.8020 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ensemble achieves AUC-ROC of 0.9665 and MCC of 0.8020, indicating strong
+discriminative power on the full combined dataset despite the 2.45:1 class imbalance.
+AYLA's 91.88\% accuracy surpasses the Hink et al.\ \cite{hink2014ml}
+combined-dataset baseline of 90.56\%---the only directly comparable prior result.
+Prior work reporting 95--99\% accuracy \cite{panthi2022ensemble,naeem2025deep,graphkan2025}
+evaluates on isolated per-scenario sub-datasets, eliminating inter-class ambiguity
+and making those results not directly comparable.
+
+\subsection{RAG Retrieval Accuracy}
+
+The two-phase retrieval achieves perfect recall on all 13 curated protocol test
+cases: 13/13 (100\%) of expected protocol identifiers appear in the retrieved context.
+Cross-encoder reranking is critical for several protocols (R4-PM, RTCI-01, FREQ-01)
+where the correct document is retrieved but does not rank first from the bi-encoder alone.
+
+\subsection{LLM Protocol Attribution and Ablation}
+
+\begin{table}[H]
+\centering
+\caption{LLM protocol attribution accuracy and no-context ablation
+         (same 200 samples, identical prompt structure). 95\% Wilson CIs shown.}
+\label{tab:llm_ablation}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Condition} & \textbf{Correct} & \textbf{95\% CI} \\
+\midrule
+Full pipeline (RAG context) & 181/200 (90.5\%) & [85.6\%, 93.8\%] \\
+No-context ablation         &  33/200 (16.5\%) & [12.0\%, 22.3\%] \\
+\midrule
+$\chi^2$ ($p_0{=}1/13$) & \multicolumn{2}{r}{1931.42, $p < 10^{-10}$} \\
+Accuracy drop & \multicolumn{2}{r}{$-74.0$~pp} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The full AYLA pipeline achieves 90.5\% correct protocol citation (181/200) with a
+100\% any-citation rate.
+A $\chi^2$ goodness-of-fit test ($\chi^2 = 1931.42$, $p < 10^{-10}$) confirms
+performance far exceeds the random-selection baseline ($p_0 = 1/13 \approx 7.7\%$).
+
+Removing retrieved context drops attribution to 16.5\%---a \textbf{74.0~pp decline}
+with non-overlapping confidence intervals
+([85.6\%, 93.8\%] vs.\ [12.0\%, 22.3\%]).
+Without context, the LLM collapses to citing a single default protocol (R4-PM)
+for nearly all events regardless of relay identity or sensor type, consistent with
+parametric guessing rather than document-grounded reasoning.
+This ablation directly confirms that the 90.5\% pipeline accuracy is grounded in
+the retrieved protocol manuals.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Discussion}
+\label{sec:discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textbf{Remaining failure mode: RTCI-01.}
+RTCI-01 (Remote Terminal Communication Injection) is the dominant unsolved failure
+class (0/7 = 0\%).
+RTCI-01 involves current collapse correlated with Snort IDS log spikes; however,
+SHAP attribution frequently elevates phase-angle or current-harmonic sensors above
+the log channels when both co-occur, depriving the RAG query of the vocabulary
+needed to distinguish RTCI-01 from relay-specific FDIA scenarios.
+A log-channel promotion fix was attempted---elevating Snort log drivers in
+the RAG query regardless of SHAP rank when active---but this introduced new
+failures in other protocol classes: Snort log activity co-occurs across multiple
+attack types, so unconditionally promoting log channels over-retrieves RTCI-01
+for events that are actually FDIA or FREQ-01.
+RTCI-01 remains an open failure class; resolving it likely requires a dedicated
+log-channel detection stage or protocol-aware retrieval filtering rather than a
+SHAP-rank override.
+FREQ-01 improved from 0\% in the original single-LightGBM system to 75.0\% with
+cross-encoder reranking, confirming that score incomparability across retrieval
+passes was the barrier, not missing protocol coverage.
+
+\textbf{Hardware and deployment.}
+All results were produced on a laptop NVIDIA RTX~3060 (6~GB VRAM), averaging
+\textbf{3.5 minutes per event}.
+Because the LLM stage is event-driven---triggering only when a sensor snapshot
+exceeds $\tau$, not on every relay log---the 3.5-minute cost is incurred only on
+flagged anomalies.
+For production: an RTX~4090 reduces latency to $\sim$45--90~s per event;
+an A100 to $\sim$20--40~s.
+For single-substation deployments with rare attack events, laptop-class hardware
+is viable; multi-substation control centers should use a dedicated GPU server.
+Local LLM deployment (Ollama) is required in environments where SCADA telemetry
+cannot be transmitted to external API endpoints.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Power Shield implements AYLA, an end-to-end pipeline for power grid attack
+detection and LLM-guided remediation.
+Three results establish its feasibility.
+\textbf{First}, the SHAP-guided LightGBM/XGBoost ensemble achieves 91.88\%
+accuracy, AUC-ROC 0.9665, and 94.6\% attack recall on the full combined
+MSU/ORNL dataset, surpassing the Hink et al.\ \cite{hink2014ml} combined-dataset
+baseline---the only directly comparable prior result.
+\textbf{Second}, a no-context ablation confirms that the 90.5\% LLM protocol
+attribution (181/200) is grounded in retrieved documents: removing context drops
+accuracy to 16.5\%, a 74.0~pp decline with non-overlapping 95\% CIs.
+\textbf{Third}, unlike current commercial ICS security platforms (Claroty, Dragos,
+Nozomi Networks), which surface alerts but provide no automated remediation,
+AYLA delivers step-by-step, protocol-grounded operator guidance for each
+flagged event---a capability absent from all known deployed ICS security systems.
+The full implementation, pre-trained model, and evaluation data are publicly
+available at \url{https://github.com/gradams42/power-shield}.
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}
