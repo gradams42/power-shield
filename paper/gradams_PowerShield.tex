@@ -163,7 +163,7 @@ sensor drivers.
 \medskip\noindent
 \textbf{Stage 3 --- RAG Protocol Retrieval.}
 A two-phase retrieval strategy queries a ChromaDB vector store indexed from
-thirteen operator-written grid-protocol manuals using \texttt{all-MiniLM-L6-v2}
+thirteen synthetic grid-protocol manuals using \texttt{all-MiniLM-L6-v2}
 sentence embeddings.
 \textit{Phase~1} (bi-encoder, multi-pass): a relay-filtered primary query ($k{=}4$)
 surfaces relay-specific FDIA protocols; supplementary type-pattern queries ($k{=}2$)
@@ -267,12 +267,30 @@ Data is split 64/16/20 into training, calibration, and held-out test sets
 
 \subsection{Protocol Knowledge Base}
 
-Thirteen operator-written protocol documents are indexed into ChromaDB using
-700-character chunks with 100-character overlap.
-The protocols span relay-specific FDIA scenarios (R1-FDIA through R4-PM),
-generic anomaly classes (RSCA-01, RTCI-01, FREQ-01), fault and degradation
-scenarios (CURR-01, PHASE-01, FAULT-01, DEGR-01, DEGR-02), and a
+Thirteen protocol documents were authored by the researcher, grounded in the
+MSU/ORNL dataset's documented attack signatures \cite{morris2014ics} and
+standard power system protection principles.
+Each document specifies the distinguishing sensor pattern for one attack or fault
+class and a set of remediation steps consistent with conventional substation
+procedures; they serve as a proxy for operational runbooks that would be
+indexed in a production deployment.
+The documents are indexed into ChromaDB using 700-character chunks with
+100-character overlap and span relay-specific FDIA scenarios (R1-FDIA through
+R4-PM), generic anomaly classes (RSCA-01, RTCI-01, FREQ-01), fault and
+degradation scenarios (CURR-01, PHASE-01, FAULT-01, DEGR-01, DEGR-02), and a
 normal-operation baseline (EXPECTED-09).
+The following excerpt from the R1-FDIA entry illustrates the protocol format:
+
+\begin{quote}\small
+\textbf{R1-FDIA:} If voltage magnitude sensors on Relay~1 (\texttt{R1-PM1:V},
+\texttt{R1-PM2:V}, \texttt{R1-PM3:V}) show fluctuations exceeding 10\% while the
+corresponding impedance sensor (\texttt{R1-PA:Z}) remains flat and no current spike
+is observed on \texttt{R1-PM4:I}--\texttt{R1-PM6:I}, the likely cause is a False
+Data Injection Attack targeting Relay~1 phasor measurements.
+\textit{Remediation:} Lock Relay~1 data stream from SCADA write access; manually
+verify phasor data at the R1 substation; if discrepancy with R2 persists beyond
+30~s, escalate to control center and flag for cybersecurity review.
+\end{quote}
 
 \subsection{Evaluation Protocol}
 
@@ -392,6 +410,16 @@ SHAP-rank override.
 FREQ-01 improved from 0\% in the original single-LightGBM system to 75.0\% with
 cross-encoder reranking, confirming that score incomparability across retrieval
 passes was the barrier, not missing protocol coverage.
+
+\textbf{Protocol knowledge base realism.}
+The 13 protocol documents were authored by the researcher, grounded in the
+MSU/ORNL dataset's documented attack signatures and standard power system
+protection principles, but not independently validated by working grid operators.
+In production, the vector store would be indexed from actual operator runbooks,
+NERC CIP procedures, or vendor relay documentation.
+The pipeline is protocol-agnostic: the indexed document set is a deployment
+parameter, not an architectural constraint, and results here represent a
+proof-of-concept on synthetic protocols.
 
 \textbf{Hardware and deployment.}
 All results were produced on a laptop NVIDIA RTX~3060 (6~GB VRAM), averaging

@@ -61,7 +61,7 @@ for Power Grid Attack Detection and LLM-Guided Remediation}
   test set of 15,676 samples drawn from a 78,377-record SCADA dataset.
   SHAP TreeExplainer then identifies the top contributing sensors, which are used
   as semantically enriched retrieval keys against a ChromaDB vector store indexed
-  from thirteen operator-written grid-protocol manuals.
+  from thirteen synthetic grid-protocol manuals.
   Candidates are reranked by a cross-encoder before being passed to a locally hosted
   Mistral-Nemo LLM that reasons via a structured Chain-of-Thought (CoT) step before
   generating step-by-step remediation advice.
@@ -387,7 +387,7 @@ using a relay-and-type regex registry.
 \noindent
 \textbf{Stage 3 --- RAG Protocol Retrieval.}
 A two-phase retrieval strategy queries a ChromaDB vector store indexed from
-thirteen operator-written grid-protocol manuals using the \texttt{all-MiniLM-L6-v2}
+thirteen synthetic grid-protocol manuals using the \texttt{all-MiniLM-L6-v2}
 sentence embedding model.
 \textit{Phase 1} (bi-encoder, multi-pass): a relay-filtered primary query ($k{=}4$)
 surfaces relay-specific FDIA protocols; supplementary type-pattern queries ($k{=}2$)
@@ -558,14 +558,34 @@ The 20\% test set contains 15,676 samples and is never used during training or c
 
 \subsection{Protocol Knowledge Base}
 
-Thirteen operator-written protocol documents are stored in a single structured text
-file and indexed into ChromaDB using 700-character chunks with 100-character overlap.
+Thirteen protocol documents were authored by the researcher, grounded in the
+documented attack signatures and sensor channel descriptions of the MSU/ORNL
+dataset \cite{morris2014ics} and standard power system protection principles.
+Each document specifies the distinguishing sensor pattern for one attack or fault
+class (voltage, current, impedance, and/or log-channel thresholds) and a
+corresponding set of remediation steps consistent with conventional substation
+operating procedures.
+The documents are stored in a single structured text file and indexed into
+ChromaDB using 700-character chunks with 100-character overlap.
 Documents are tagged with relay-specific metadata (\texttt{R1}--\texttt{R4})
 or \texttt{GENERIC} based on their protocol header, enabling relay-filtered retrieval.
 The thirteen protocols cover: four relay-specific FDIA scenarios (R1-FDIA, R2-FDIA,
 R3-FDIA, R4-PM), three generic anomaly classes (RSCA-01, RTCI-01, FREQ-01),
 four fault/degradation scenarios (CURR-01, PHASE-01, FAULT-01, DEGR-01, DEGR-02),
 and one normal-operation baseline (EXPECTED-09).
+The following excerpt from the R1-FDIA entry illustrates the protocol format,
+showing how sensor-level thresholds and remediation steps are expressed:
+
+\begin{quote}\small
+\textbf{R1-FDIA:} If voltage magnitude sensors on Relay~1 (\texttt{R1-PM1:V},
+\texttt{R1-PM2:V}, \texttt{R1-PM3:V}) show fluctuations exceeding 10\% while the
+corresponding impedance sensor (\texttt{R1-PA:Z}) remains flat and no current spike
+is observed on \texttt{R1-PM4:I}--\texttt{R1-PM6:I}, the likely cause is a False
+Data Injection Attack targeting Relay~1 phasor measurements.
+\textit{Remediation:} Lock Relay~1 data stream from SCADA write access; manually
+verify phasor data at the R1 substation; if discrepancy with R2 persists beyond
+30~s, escalate to control center and flag for cybersecurity review.
+\end{quote}
 
 \subsection{Implementation}
 
@@ -1067,6 +1087,24 @@ FDIA attack descriptions.
 Tightening PHASE-01's language to emphasize its unique discriminator
 (simultaneous step-change in phase angle \textit{with stable magnitudes})
 would reduce its embedding similarity to voltage-magnitude queries.
+
+\subsection{Protocol Knowledge Base Realism}
+
+The 13 protocol documents used in this evaluation were authored by the researcher
+rather than sourced from a production SCADA system.
+Their diagnostic signatures are grounded in the MSU/ORNL dataset's documented
+attack scenarios \cite{morris2014ics} and standard power system protection
+principles (relay threshold logic, impedance/voltage/current relationships),
+but they have not been independently validated by working grid operators.
+In a production deployment, the ChromaDB index would be populated with actual
+operator runbooks, NERC CIP incident response procedures, or vendor-supplied
+protection relay documentation.
+The AYLA pipeline architecture is protocol-agnostic: the document set indexed
+into the vector store is a deployment parameter, not an architectural constraint.
+The retrieval and attribution accuracy results reported here should be interpreted
+as a proof-of-concept demonstration of the architecture's capability on
+researcher-authored synthetic protocols, with the expectation that results
+on real operational documentation may differ.
 
 \subsection{Hardware and Deployment Requirements}
 
